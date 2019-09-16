@@ -16,12 +16,12 @@ minimal_mistakes_skin    : "air"
 
 # Site Settings
 #locale                   : "en-US"
-title                    : "My blog: robotics education with Kibotics"
+title                    : "Robotics Lab Club"
 title_separator          : "-"
 subtitle                 : Programming Robot Intelligence
 name                     : "JdeRobot"
 description              : "Programming Robot Intelligence"
-url                      : https://roboticslaburjc.github.io/2019-tfg-natalia-monforte/
+url                      : http://jderobot.github.io
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : JdeRobot
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
@@ -123,14 +123,20 @@ analytics:
 # Site Author
 author:
   name             : "Natalia Monforte Rodríguez"
-  avatar           : "/assets/images/profile.jpg"
-  bio              : "Site for TFG"
+  avatar           : "/assets/images/fotoCV.jpg"
+  bio              : "Site for my TFG"
   location         : "Madrid"
   email            :
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
       url: nataliiamr7@gmail.com
+    - label: "About Me"
+      icon: "fas fa-fw fa-link"
+      url: "yoursite.com"
+    - label: "Twitter"
+      icon: "fab fa-fw fa-twitter-square"
+      url: "https://twitter.com/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/nataliamr7/2019-tfg-natalia-monforte"
