@@ -16,9 +16,9 @@ minimal_mistakes_skin    : "air"
 
 # Site Settings
 #locale                   : "en-US"
-title                    : "Robotics Lab Club"
+title                    : "My TFG's blog"
 title_separator          : "-"
-subtitle                 : Programming Robot Intelligence
+subtitle                 : Robotics education with Kibotics
 name                     : "JdeRobot"
 description              : "Programming Robot Intelligence"
 url                      : http://jderobot.github.io

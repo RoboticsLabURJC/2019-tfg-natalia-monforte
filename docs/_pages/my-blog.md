@@ -1,7 +1,7 @@
 ---
 title: "My blog"
 layout: posts
-permalink: /Myblog/
+permalink: /myblog/
 
 collection: posts
 

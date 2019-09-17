@@ -13,7 +13,7 @@ feature_row:
   - image_path: /assets/images/cover/logbook.jpg
     alt: "LogBook"
     title: "My blog"
-    excerpt: "Goals, progress, problems and solutions achieved during development"
+    excerpt: "Goals, progress, problems and solutions achieved during TFG's development"
     url: "/logbook/"
     btn_class: "btn--primary"
     btn_label: "Learn more"
@@ -38,9 +38,9 @@ youTube_id: ID7qaEcIu4k
 
 {% include feature_row %}
 
-Hello, everybody.
+Welcome to my TFG's blog! 
 
-Welcome to my TFG's blog! Here, I will explain my progress during the completion of my end-of-degree work. 
+Here, I will explain my progress during the completion of my end-of-degree work. 
 
 I hope you enjoy it! 
 

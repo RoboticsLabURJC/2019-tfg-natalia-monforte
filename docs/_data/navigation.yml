@@ -1,7 +1,7 @@
 # main links
 main:
 
-  - title: LogBook
+  - title: My blog
     url: /logbook/
 
   - title: Installation
@@ -12,7 +12,7 @@ main:
 
 # left side bar
 docs:
-  - title: LogBook
+  - title: My blog
     children:
       - title: Check it out
         url: /logbook/
