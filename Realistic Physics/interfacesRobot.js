@@ -9,6 +9,10 @@ var errorW = 0;
 var commandedVelocityY = 0;
 var commandedVelocityXZ = 0;
 var commandedVelocityW = 0;
+var refPos = 0;
+var parado = true;
+var time = 0;
+var lastTime = 0;
 
 export class RobotI {
     constructor(robotId) {
@@ -213,25 +217,35 @@ export class RobotI {
         */
 
         if (this.simulationEnabled) {
+            //this.milisecondCounter();
+            //console.log(time);
 
           //console.log("iteraciones de CANNON: " + motorIterations);
           // CONTROL EN ACELERACIÓN CON CONTROLADOR PD
             if (this.velocity.y != 0) {   // Robot en movimiento
-                var accelerationPDY = this.controladorPDVertical();
+                parado = false;
+                var accelerationPDY = this.controladorPDVerticalVel();
                 commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY*0.01;
                 lastVelocityY = commandedVelocityY;
                 this.robot.body.velocity.set(this.robot.body.velocity.x, commandedVelocityY, this.robot.body.velocity.z);
-                console.log(commandedVelocityY);
+                //console.log(commandedVelocityY);
                 //console.log("ITERACIONES PROPIAS: " + motorIterations);
                 //console.log("Motor propio (v objetivo != 0)    " + commandedVelocityY + this.robot.body.position.y);
             } else { // Si no hay velocidad de referencia, la aceleración la fijamos a 9.8 para que se quede en suspensión
-                var accelerationPDY = this.controladorPDVertical();
+                //console.log("EN SUSPENSIÓN");
+                if (parado == false) {
+                    refPos = this.robot.body.position.y;
+                }
+                parado = true;
+                var accelerationPDY = this.controladorPDVerticalPos();
+                //console.log("Fuera del controlador  " + refPos);
                 commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY*0.01;
                 lastVelocityY = commandedVelocityY;
                 this.robot.body.velocity.set(this.robot.body.velocity.x, commandedVelocityY, this.robot.body.velocity.z);
-                console.log(commandedVelocityY);
+                //console.log(commandedVelocityY);
                 //console.log("ITERACIONES PROPIAS: " + motorIterations);
-                //console.log("Motor propio (v objetivo != 0)    " + commandedVelocityY + this.robot.body.position.y);
+                //console.log("Motor propio vel   " + commandedVelocityY);
+                //console.log("Motor propio pos  " + this.robot.body.position.y);
             }
             if (this.velocity.x != 0) {   // Robot en movimiento
                 let rotation = this.getRotation();
@@ -267,7 +281,14 @@ export class RobotI {
         motorIterations = 0;
     }
 
-    controladorPDVertical() {
+    milisecondCounter() {
+        window.setInterval(function(){
+        time++;
+        },1);
+        console.log(time);
+    }
+
+    controladorPDVerticalVel() {
         const mass = this.robot.body.mass;
         const kp = 100*mass;
         const kd = 4.5*mass;
@@ -275,6 +296,28 @@ export class RobotI {
         const accelerationMax = 1000000 / mass;
 
         var errorActualY = this.velocity.y - this.robot.body.velocity.y; // Si todavía no he alcanzado el objetivo, será negativo
+        var derivadaErrorY = Math.abs(errorY - errorActualY);
+        errorY = errorActualY;
+        var forcePD = kp*errorActualY + kd*derivadaErrorY;
+        var accelerationPD = forcePD / mass;
+
+        if (accelerationPD > accelerationMax) {
+            accelerationPD = accelerationMax;
+        }
+        //console.log("Aceleración:  " + accelerationPD);
+
+        return accelerationPD;
+    }
+
+    controladorPDVerticalPos() {
+        const mass = this.robot.body.mass;
+        const kp = 700*mass;
+        const kd = 700*mass;
+
+        const accelerationMax = 1000000 / mass;
+
+        //console.log("Dentro del controlador  " + refPos);
+        var errorActualY = refPos - this.robot.body.position.y;
         var derivadaErrorY = Math.abs(errorY - errorActualY);
         errorY = errorActualY;
         var forcePD = kp*errorActualY + kd*derivadaErrorY;
