@@ -220,12 +220,17 @@ export class RobotI {
             //this.milisecondCounter();
             //console.log(time);
 
+            //window.setInterval(function(){
+            //time++;
+            //},1);
+            //console.log(time);
+
           //console.log("iteraciones de CANNON: " + motorIterations);
           // CONTROL EN ACELERACIÓN CON CONTROLADOR PD
             if (this.velocity.y != 0) {   // Robot en movimiento
                 parado = false;
                 var accelerationPDY = this.controladorPDVerticalVel();
-                commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY*0.01;
+                commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY;
                 lastVelocityY = commandedVelocityY;
                 this.robot.body.velocity.set(this.robot.body.velocity.x, commandedVelocityY, this.robot.body.velocity.z);
                 //console.log(commandedVelocityY);
@@ -238,8 +243,8 @@ export class RobotI {
                 }
                 parado = true;
                 var accelerationPDY = this.controladorPDVerticalPos();
-                //console.log("Fuera del controlador  " + refPos);
-                commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY*0.01;
+                console.log("PARADO");
+                commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY;
                 lastVelocityY = commandedVelocityY;
                 this.robot.body.velocity.set(this.robot.body.velocity.x, commandedVelocityY, this.robot.body.velocity.z);
                 //console.log(commandedVelocityY);
@@ -290,13 +295,13 @@ export class RobotI {
 
     controladorPDVerticalVel() {
         const mass = this.robot.body.mass;
-        const kp = 100*mass;
-        const kd = 4.5*mass;
+        const kp = 0.55*mass;
+        const kd = 0.12*mass;
 
         const accelerationMax = 1000000 / mass;
 
         var errorActualY = this.velocity.y - this.robot.body.velocity.y; // Si todavía no he alcanzado el objetivo, será negativo
-        var derivadaErrorY = Math.abs(errorY - errorActualY);
+        var derivadaErrorY = errorActualY - errorY;
         errorY = errorActualY;
         var forcePD = kp*errorActualY + kd*derivadaErrorY;
         var accelerationPD = forcePD / mass;
@@ -311,14 +316,14 @@ export class RobotI {
 
     controladorPDVerticalPos() {
         const mass = this.robot.body.mass;
-        const kp = 700*mass;
-        const kd = 700*mass;
+        const kp = 0.95*mass;
+        const kd = 0.95*mass;
 
         const accelerationMax = 1000000 / mass;
 
         //console.log("Dentro del controlador  " + refPos);
         var errorActualY = refPos - this.robot.body.position.y;
-        var derivadaErrorY = Math.abs(errorY - errorActualY);
+        var derivadaErrorY = errorActualY - errorY;
         errorY = errorActualY;
         var forcePD = kp*errorActualY + kd*derivadaErrorY;
         var accelerationPD = forcePD / mass;
