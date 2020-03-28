@@ -212,63 +212,41 @@ export class RobotI {
 
     setVelocity() {
         /*
-          This code run continiously, setting the speed of the robot every 30ms
+          This code run continiously, setting the speed of the robot every 10ms
           This function will not be callable, use setV, setW or setL
         */
 
         if (this.simulationEnabled) {
-            //this.milisecondCounter();
-            //console.log(time);
 
-            //window.setInterval(function(){
-            //time++;
-            //},1);
-            //console.log(time);
-
-          //console.log("iteraciones de CANNON: " + motorIterations);
-          // CONTROL EN ACELERACIÓN CON CONTROLADOR PD
-            if (this.velocity.y != 0) {   // Robot en movimiento
+            /* Y AXIS */
+            if (this.velocity.y > 0.0001 || this.velocity.y < -0.0001) {
                 parado = false;
                 var accelerationPDY = this.controladorPDVerticalVel();
-                commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY;
-                lastVelocityY = commandedVelocityY;
-                this.robot.body.velocity.set(this.robot.body.velocity.x, commandedVelocityY, this.robot.body.velocity.z);
-                //console.log(commandedVelocityY);
-                //console.log("ITERACIONES PROPIAS: " + motorIterations);
-                //console.log("Motor propio (v objetivo != 0)    " + commandedVelocityY + this.robot.body.position.y);
-            } else { // Si no hay velocidad de referencia, la aceleración la fijamos a 9.8 para que se quede en suspensión
-                //console.log("EN SUSPENSIÓN");
+            } else {
                 if (parado == false) {
                     refPos = this.robot.body.position.y;
                 }
                 parado = true;
                 var accelerationPDY = this.controladorPDVerticalPos();
-                console.log("PARADO");
-                commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY;
-                lastVelocityY = commandedVelocityY;
-                this.robot.body.velocity.set(this.robot.body.velocity.x, commandedVelocityY, this.robot.body.velocity.z);
-                //console.log(commandedVelocityY);
-                //console.log("ITERACIONES PROPIAS: " + motorIterations);
-                //console.log("Motor propio vel   " + commandedVelocityY);
-                //console.log("Motor propio pos  " + this.robot.body.position.y);
             }
-            if (this.velocity.x != 0) {   // Robot en movimiento
-                let rotation = this.getRotation();
-                var resultVelocity = this.robot.body.velocity.x / Math.cos(rotation.y * Math.PI / 180) + this.robot.body.velocity.z  / Math.sin(-rotation.y * Math.PI / 180);
-                var accelerationPD = this.controladorPDHorizontal(resultVelocity);
-                commandedVelocityXZ = resultVelocity + accelerationPD*0.01;
-                console.log("Velocidad resultante: " + resultVelocity);
-                console.log("Velocidad comandada: " + commandedVelocityY);
-                this.robot.body.velocity.set(commandedVelocityXZ * Math.cos(rotation.y * Math.PI / 180), this.robot.body.velocity.y, commandedVelocityXZ * Math.sin(-rotation.y * Math.PI / 180));
-            }
+            commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY;
+            lastVelocityY = commandedVelocityY;
+            this.robot.body.velocity.set(this.robot.body.velocity.x, commandedVelocityY, this.robot.body.velocity.z);
 
-            if (this.velocity.ay != 0) {   // Robot girando
-                var accelerationPDW = this.controladorPDAngular();
-                commandedVelocityW = this.robot.body.angularVelocity.y + accelerationPDW*0.01;
-                lastAngularVel = commandedVelocityW;
-                this.robot.body.angularVelocity.set(0, commandedVelocityW, 0);
-                //console.log(commandedVelocityW);
-            }
+            /* Horizontal plane */
+            let rotation = this.getRotation();
+            var resultVelocity = this.robot.body.velocity.x / Math.cos(rotation.y * Math.PI / 180) + this.robot.body.velocity.z  / Math.sin(-rotation.y * Math.PI / 180);
+            var accelerationPD = this.controladorPDHorizontal(resultVelocity);
+            commandedVelocityXZ = resultVelocity + motorIterations*accelerationPD;
+            this.robot.body.velocity.set(commandedVelocityXZ * Math.cos(rotation.y * Math.PI / 180), this.robot.body.velocity.y, commandedVelocityXZ * Math.sin(-rotation.y * Math.PI / 180));
+
+            /* Angular movement */
+            var accelerationPDW = this.controladorPDAngular();
+            commandedVelocityW = this.robot.body.angularVelocity.y + motorIterations*accelerationPDW;
+            lastAngularVel = commandedVelocityW;
+            this.robot.body.angularVelocity.set(0, commandedVelocityW, 0);
+            //console.log("ANGULAR: " + commandedVelocityW);
+
 
             if (this.robot.body.position.y > 1) { //to activate animation of drone
                 var robot = document.querySelector("#" + this.myRobotID);
@@ -278,19 +256,9 @@ export class RobotI {
                   var robot = document.querySelector("#" + this.myRobotID);
                   robot.setAttribute('animation-mixer', "clip:None");
             }
-
-            //this.robot.body.angularVelocity.set(this.velocity.ax, this.velocity.ay, this.velocity.az);
-
         }
         this.timeoutMotors = setTimeout(this.setVelocity.bind(this), 10);
         motorIterations = 0;
-    }
-
-    milisecondCounter() {
-        window.setInterval(function(){
-        time++;
-        },1);
-        console.log(time);
     }
 
     controladorPDVerticalVel() {
@@ -309,8 +277,6 @@ export class RobotI {
         if (accelerationPD > accelerationMax) {
             accelerationPD = accelerationMax;
         }
-        //console.log("Aceleración:  " + accelerationPD);
-
         return accelerationPD;
     }
 
@@ -321,7 +287,6 @@ export class RobotI {
 
         const accelerationMax = 1000000 / mass;
 
-        //console.log("Dentro del controlador  " + refPos);
         var errorActualY = refPos - this.robot.body.position.y;
         var derivadaErrorY = errorActualY - errorY;
         errorY = errorActualY;
@@ -331,42 +296,40 @@ export class RobotI {
         if (accelerationPD > accelerationMax) {
             accelerationPD = accelerationMax;
         }
-        //console.log("Aceleración:  " + accelerationPD);
-
         return accelerationPD;
     }
 
     controladorPDHorizontal(resultVelocity) {
         const mass = this.robot.body.mass;
-        const kp = 30*mass;
-        const kd = 0.8*mass;
+        const kp = 0.49*mass;
+        const kd = 0.01*mass;
         const accelerationMax = 1000000 / mass;
         let rotation = this.getRotation();
         var errorActualXZ = this.velocity.x - resultVelocity;
-        var derivadaErrorXZ = Math.abs(errorXZ - errorActualXZ);
+        var derivadaErrorXZ = errorActualXZ - errorXZ;
         errorXZ = errorActualXZ;
 
         var forcePD = kp*errorActualXZ + kd*derivadaErrorXZ;
+
         var accelerationPD = forcePD / mass;
-        console.log("aceleracion: " + accelerationPD);
+
         if (accelerationPD > accelerationMax) {
             accelerationPD = accelerationMax;
         }
-
         return accelerationPD;
     }
 
     controladorPDAngular() {
         const mass = this.robot.body.mass;
-        const kp = 29*mass;
-        const kd = 0.4*mass;
+        const kp = 0.6*mass;
+        const kd = 0.12*mass;
         const inertia = this.robot.body.inertia.x;
         const angularAccelerationMax = 1000000 / inertia;
 
         var errorActualW = this.velocity.ay - this.robot.body.angularVelocity.y; // Si todavía no he alcanzado el objetivo, será negativo
         var derivadaErrorW = Math.abs(errorW - errorActualW);
         errorW = errorActualW;
-        //console.log(errorActualZ);
+
         var forcePD = kp*errorActualW + kd*derivadaErrorW;
         var accelerationPD = forcePD / inertia;
 
