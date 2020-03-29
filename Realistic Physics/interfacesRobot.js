@@ -212,7 +212,7 @@ export class RobotI {
 
     setVelocity() {
         /*
-          This code run continiously, setting the speed of the robot every 10ms
+          This code run continiously, setting the speed of the robot every 20ms
           This function will not be callable, use setV, setW or setL
         */
 
@@ -257,13 +257,13 @@ export class RobotI {
                   robot.setAttribute('animation-mixer', "clip:None");
             }
         }
-        this.timeoutMotors = setTimeout(this.setVelocity.bind(this), 10);
+        this.timeoutMotors = setTimeout(this.setVelocity.bind(this), 20);
         motorIterations = 0;
     }
 
     controladorPDVerticalVel() {
         const mass = this.robot.body.mass;
-        const kp = 0.55*mass;
+        const kp = 0.45*mass;
         const kd = 0.12*mass;
 
         const accelerationMax = 1000000 / mass;
@@ -301,7 +301,7 @@ export class RobotI {
 
     controladorPDHorizontal(resultVelocity) {
         const mass = this.robot.body.mass;
-        const kp = 0.49*mass;
+        const kp = 0.45*mass;
         const kd = 0.01*mass;
         const accelerationMax = 1000000 / mass;
         let rotation = this.getRotation();
