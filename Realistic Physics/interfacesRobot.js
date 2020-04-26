@@ -1,18 +1,13 @@
 import {sleep} from '../utils';
 
-var lastVelocityY = 0;
 var errorY = 0;
-var lastVelocityXZ = 0;
 var errorXZ = 0;
-var lastAngularVel = 0;
 var errorW = 0;
 var commandedVelocityY = 0;
 var commandedVelocityXZ = 0;
 var commandedVelocityW = 0;
 var refPos = 0;
 var parado = true;
-var time = 0;
-var lastTime = 0;
 
 export class RobotI {
     constructor(robotId) {
@@ -218,32 +213,40 @@ export class RobotI {
 
         if (this.simulationEnabled) {
 
-            /* Y AXIS */
-            if (this.velocity.y > 0.0001 || this.velocity.y < -0.0001) {
-                parado = false;
-                var accelerationPDY = this.controladorPDVerticalVel();
-            } else {
+            /* Y AXIS  -> ONLY FOR DRONE */
+            /*if ((this.velocity.y <= 0.0001) || (this.velocity.y <= -0.0001)){
                 if (parado == false) {
                     refPos = this.robot.body.position.y;
                 }
                 parado = true;
                 var accelerationPDY = this.controladorPDVerticalPos();
+            } else {
+                parado = false;
+                var accelerationPDY = this.controladorPDVerticalVel();
             }
             commandedVelocityY = this.robot.body.velocity.y + motorIterations*accelerationPDY;
-            lastVelocityY = commandedVelocityY;
             this.robot.body.velocity.set(this.robot.body.velocity.x, commandedVelocityY, this.robot.body.velocity.z);
 
             /* Horizontal plane */
-            let rotation = this.getRotation();
-            var resultVelocity = this.robot.body.velocity.x / Math.cos(rotation.y * Math.PI / 180) + this.robot.body.velocity.z  / Math.sin(-rotation.y * Math.PI / 180);
-            var accelerationPD = this.controladorPDHorizontal(resultVelocity);
-            commandedVelocityXZ = resultVelocity + motorIterations*accelerationPD;
-            this.robot.body.velocity.set(commandedVelocityXZ * Math.cos(rotation.y * Math.PI / 180), this.robot.body.velocity.y, commandedVelocityXZ * Math.sin(-rotation.y * Math.PI / 180));
+            //if ((this.velocity.x >= 0.0001) || (this.velocity.x <= -0.0001)){
+
+                let rotation = this.getRotation();
+                var resultVelocity = this.robot.body.velocity.x / Math.cos(rotation.y * Math.PI / 180) + this.robot.body.velocity.z  / Math.sin(-rotation.y * Math.PI / 180);
+                //console.log("Velocidad impuesta por CANNON: " + resultVelocity);
+                var accelerationPD = this.controladorPDHorizontal(resultVelocity);
+                commandedVelocityXZ = resultVelocity + motorIterations*accelerationPD;
+                this.robot.body.velocity.set(commandedVelocityXZ * Math.cos(rotation.y * Math.PI / 180), this.robot.body.velocity.y, commandedVelocityXZ * Math.sin(-rotation.y * Math.PI / 180));
+                console.log("Velocidad comandada: " + commandedVelocityXZ);
+            //} else {
+            //    this.robot.body.velocity.set(0, this.robot.body.velocity.y, 0);
+            //    let rotation = this.getRotation();
+            //    var resultVelocity = this.robot.body.velocity.x / Math.cos(rotation.y * Math.PI / 180) + this.robot.body.velocity.z  / Math.sin(-rotation.y * Math.PI / 180);
+            //    console.log("Velocidad de descenso con una masa " + this.robot.body.mass + ":" + resultVelocity);
+            }
 
             /* Angular movement */
             var accelerationPDW = this.controladorPDAngular();
             commandedVelocityW = this.robot.body.angularVelocity.y + motorIterations*accelerationPDW;
-            lastAngularVel = commandedVelocityW;
             this.robot.body.angularVelocity.set(0, commandedVelocityW, 0);
             //console.log("ANGULAR: " + commandedVelocityW);
 
@@ -284,8 +287,8 @@ export class RobotI {
         const mass = this.robot.body.mass;
         const kp = 0.95*mass;
         const kd = 0.95*mass;
-
-        const accelerationMax = 1000000 / mass;
+        const fMax = 1000;
+        const accelerationMax = fMax / mass;
 
         var errorActualY = refPos - this.robot.body.position.y;
         var derivadaErrorY = errorActualY - errorY;
@@ -303,7 +306,9 @@ export class RobotI {
         const mass = this.robot.body.mass;
         const kp = 0.45*mass;
         const kd = 0.01*mass;
-        const accelerationMax = 1000000 / mass;
+        const fMax = 1000000;
+        const accelerationMax = fMax / mass;
+
         let rotation = this.getRotation();
         var errorActualXZ = this.velocity.x - resultVelocity;
         var derivadaErrorXZ = errorActualXZ - errorXZ;
@@ -314,8 +319,10 @@ export class RobotI {
         var accelerationPD = forcePD / mass;
 
         if (accelerationPD > accelerationMax) {
+            console.log("HA LLEGADO A LA MAX");
             accelerationPD = accelerationMax;
         }
+        //console.log("ACELERACIÓN:" + accelerationPD);
         return accelerationPD;
     }
 
@@ -324,7 +331,8 @@ export class RobotI {
         const kp = 0.6*mass;
         const kd = 0.12*mass;
         const inertia = this.robot.body.inertia.x;
-        const angularAccelerationMax = 1000000 / inertia;
+        const tMax = 1000000;
+        const angularAccelerationMax = tMax / inertia;
 
         var errorActualW = this.velocity.ay - this.robot.body.angularVelocity.y; // Si todavía no he alcanzado el objetivo, será negativo
         var derivadaErrorW = Math.abs(errorW - errorActualW);
