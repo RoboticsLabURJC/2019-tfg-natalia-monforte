@@ -1,5 +1,12 @@
 import {sleep} from '../utils';
+import {simEnabled} from '../globals';
+import {tickCounter} from '../globals';
+import {getTickCounter} from '../globals';
+import {setTickCounter} from '../globals';
+import {getBrainStatus} from '../../brains/brains-methods';
+
 export class RobotI {
+
     constructor(robotId) {
         const defaultDistanceDetection = 10;
         const defaultNumOfRays = 31;
@@ -29,12 +36,8 @@ export class RobotI {
 
         this.myRobotID = robotId;
         this.robot = document.getElementById(robotId);
-        this.actualPosition = {x: 0, y: 0, z: 0};
-        this.initialPosition = {x: 0, y: 0, z: 0};
-        this.initialRotation = {x: 0, y: 0, z: 0};
         this.activeRays = false;
         this.camerasData = [];
-        //this.activeCamera = 0;
         this.raycastersArray = [];
         this.distanceArray = {
             center: [],
@@ -49,30 +52,15 @@ export class RobotI {
             black: {low: [0, 0, 0, 255], high: [105, 105, 105, 255]}
         };
         this.velocity = {x: 0, y: 0, z: 0, ax: 0, ay: 0, az: 0};
-        this.acceleration = {x: 0, y: 0, z: 0, ax: 0, ay: 0, az: 0};
-        this.simulationEnabled = true;
 
-        this.storeInitialPosition(this.robot.getAttribute('position'));
-        this.storeActualPosition(this.robot.getAttribute('position'));
         this.findCameras();
-        this.motorsStarter()
+        this.motorsStarter();
         this.startCamera();
         this.startRaycasters(defaultDistanceDetection, defaultNumOfRays);
         var robotEvent = new CustomEvent('robot-loaded', {
             'detail': this
         });
         document.dispatchEvent(robotEvent);
-    }
-
-    changeSimulationState(state) {
-        /**
-         * Change the simulation state (SIM-API)
-         *
-         * @param {boolean} state State of the simulation to be set up
-         */
-        if (typeof state === 'boolean') {
-            this.simulationEnabled = state;
-        }
     }
 
     getID() {
@@ -108,6 +96,7 @@ export class RobotI {
 
         console.log("LOG ---------------- Setting up motors.")
         this.setVelocity();
+        this.auxiliaryPhysics();
     }
 
     getRotation() {
@@ -117,41 +106,16 @@ export class RobotI {
         return this.robot.getAttribute('rotation');
     }
 
-    resetRobot() {
-        this.velocity = {x: 0, y: 0, z: 0, ax: 0, ay: 0, az: 0};
-        this.robot.body.position.set(this.robot.body.initPosition.x, this.robot.body.initPosition.y, this.robot.body.initPosition.z);
-        this.robot.body.quaternion.set(this.robot.body.initQuaternion.x, this.robot.body.initQuaternion.y, this.robot.body.initQuaternion.z, this.robot.body.initQuaternion.w)
-
-    }
-
-    storeActualPosition(positionObject) {
-        this.actualPosition.x = positionObject.x;
-        this.actualPosition.y = positionObject.y;
-        this.actualPosition.z = positionObject.z;
-    }
-
-    storeInitialPosition(positionObject) {
-        this.initialPosition.x = positionObject.x;
-        this.initialPosition.y = positionObject.y;
-        this.initialPosition.z = positionObject.z;
-    }
-
     setV(v) {
-        if (this.simulationEnabled) {
-            this.velocity.x = v;
-        }
+        this.velocity.x = v;
     }
 
     setW(w) {
-        if (this.simulationEnabled) {
-            this.velocity.ay = w;
-        }
+        this.velocity.ay = w * 10;
     }
 
     setL(l) {
-        if (this.simulationEnabled) {
-            this.velocity.y = l;
-        }
+        this.velocity.y = l;
     }
 
     move(v, w, h) {
@@ -164,46 +128,82 @@ export class RobotI {
         this.setV(linearSpeed);
     }
 
+
     async advanceTo(distance) {
+        var brainStatus = getBrainStatus(this.myRobotID);
+        brainStatus.blocking_instruction = true;
         let initial_position_x = this.getPosition().x;
         let initial_position_z = this.getPosition().z;
         distance > 0 ? this.setV(1) : this.setV(-1);
-        while (Math.sqrt(Math.pow(initial_position_x-this.getPosition().x,2)
-            + Math.pow(initial_position_z-this.getPosition().z,2)) <= Math.abs(distance)) {
+        while (getBrainStatus(this.myRobotID).status !== "RELOADING" && Math.sqrt(Math.pow(initial_position_x - this.getPosition().x, 2)
+            + Math.pow(initial_position_z - this.getPosition().z, 2)) <= Math.abs(distance)) {
             await sleep(0.01);
         }
+        brainStatus.blocking_instruction = false;
         this.setV(0);
     }
 
-    async turnUpTo(angle) {
-        let initial_position = this.getPosition().theta;
-        angle > 0 ? this.setW(-0.15) : this.setW(0.15);
-        while (Math.abs(initial_position - this.getPosition().theta) <= Math.abs(angle)) {
-            await sleep(0.001);
+    async upTo(distance) {
+        let initial_position = this.getPosition().y;
+        this.setL(1);
+        while (getBrainStatus(this.myRobotID).status !== "RELOADING" && Math.abs(initial_position - this.getPosition().y) <= Math.abs(distance)) {
+            await sleep(0.01);
         }
+        this.setL(0);
+    }
+
+    async downTo(distance) {
+        let initial_position = this.getPosition().y;
+        this.setL(-1);
+        while (getBrainStatus(this.myRobotID).status !== "RELOADING" && Math.abs(initial_position - this.getPosition().y) <= Math.abs(distance)) {
+            await sleep(0.01);
+        }
+        this.setL(0);
+    }
+
+    async turnUpTo(angle) {
+        var brainStatus = getBrainStatus(this.myRobotID);
+        brainStatus.blocking_instruction = true;
+        let initial_position = this.getPosition().theta + 180.0; // [0, 360]
+        angle > 0 ? this.setW(-0.15) : this.setW(0.15);
+        var current_position = this.getPosition().theta + 180.0; // [0, 360]
+        if (initial_position - angle < 0.0) {
+            angle = angle - 360.0; // discontinuity
+        }
+        while (getBrainStatus(this.myRobotID).status !== "RELOADING" && Math.abs(current_position - ((initial_position - angle) % 360.0)) >= 5.0) {
+            await sleep(0.0001);
+            current_position = this.getPosition().theta + 180.0; // [0, 360]
+        }
+        brainStatus.blocking_instruction = false;
         this.setW(0);
     }
 
     async land() {
+        var brainStatus = getBrainStatus(this.myRobotID);
+        brainStatus.blocking_instruction = true;
         let position = this.getPosition();
         if (position.y > 2) {
-            while (this.getPosition().y > 2) {
+            while (getBrainStatus(this.myRobotID).status !== "RELOADING" && this.getPosition().y > 2) {
                 this.setL(-2);
-				await sleep(0.2);
+                await sleep(0.2);
             }
             this.setL(0);
         }
+        brainStatus.blocking_instruction = false;
     }
 
     async takeOff() {
+        var brainStatus = getBrainStatus(this.myRobotID);
+        brainStatus.blocking_instruction = true;
         let position = this.getPosition();
         if (position.y < 10) {
-            while (this.getPosition().y < 10) {
+            while (getBrainStatus(this.myRobotID).status !== "RELOADING" && this.getPosition().y < 10) {
                 this.setL(2);
-				await sleep(0.2);
+                await sleep(0.2);
             }
             this.setL(0);
         }
+        brainStatus.blocking_instruction = false;
     }
 
     getV() {
@@ -218,36 +218,28 @@ export class RobotI {
         return this.velocity.y;
     }
 
-    setVelocity() {
-        /*
-          This code run continiously, setting the speed of the robot every 20ms
-          This function will not be callable, use setV, setW or setL
-        */
-
-        if (this.simulationEnabled) {
+    auxiliaryPhysics() {
             /* Actualización de iteraciones de CANNON */
-            if (this.myRobotID == "a-car1") {
-                this.motorIterations = motorIterations1 / models;
-            } else if (this.myRobotID == "a-car2") {
-                this.motorIterations = motorIterations2 / models;
-            }
 
+            this.motorIterations = getTickCounter();
 
             /* Y AXIS  -> ONLY FOR DRONE */
-            /*if ((this.velocity.y <= 0.0001) || (this.velocity.y <= -0.0001)){
-                if (parado == false) {
+            if ((this.velocity.y <= 0.0001) || (this.velocity.y <= -0.0001)){
+                if (this.stop == true) {
                     this.refPos = this.robot.body.position.y;
                 }
-                this.stop = true;
+                this.stop = false;
                 this.accelerationPDY = this.controladorPDVerticalPos();
             } else {
-                this.stop = false;
+                this.stop = true;
                 this.accelerationPDY = this.controladorPDVerticalVel();
             }
-            this.commandedVelocityY = this.robot.body.velocity.y + this.motorIterations*accelerationPDY;
+            this.commandedVelocityY = this.robot.body.velocity.y + this.motorIterations*this.accelerationPDY;
             this.robot.body.velocity.set(this.robot.body.velocity.x, this.commandedVelocityY, this.robot.body.velocity.z);
 
+
             /* Horizontal plane */
+
             let rotation = this.getRotation();
             if (Math.abs(rotation.y) >= 0.0001 || Math.abs(rotation.y) <= 0.0001 || Math.abs(rotation.y) >= 180.0001 || Math.abs(rotation.y) <= 180.0001  || Math.abs(rotation.y) >= 360.0001 || Math.abs(rotation.y) <= 360.0001) {
                 this.resultVelocity = this.robot.body.velocity.x;
@@ -256,9 +248,11 @@ export class RobotI {
             } else {
                 this.resultVelocity = this.robot.body.velocity.x / Math.cos(rotation.y * Math.PI / 180) + this.robot.body.velocity.z  / Math.sin(-rotation.y * Math.PI / 180);
             }
+            this.resultVelocity = Math.sqrt(Math.pow(this.robot.body.velocity.x, 2) + Math.pow(this.robot.body.velocity.z, 2));
 
             this.accelerationPDXZ = this.controladorPDHorizontal(this.resultVelocity);
             this.commandedVelocityXZ = this.resultVelocity + this.motorIterations*this.accelerationPDXZ;
+            //console.log("Velocidad comandada:" + this.commandedVelocityXZ);
             this.robot.body.velocity.set(this.commandedVelocityXZ * Math.cos(rotation.y * Math.PI / 180), this.robot.body.velocity.y, this.commandedVelocityXZ * Math.sin(-rotation.y * Math.PI / 180));
 
 
@@ -268,22 +262,9 @@ export class RobotI {
             this.robot.body.angularVelocity.set(0, this.commandedVelocityW, 0);
 
             /* Actualización de iteraciones de CANNON */
-            if (this.myRobotID == "a-car1") {
-                motorIterations1 = 0;
-            } else if (this.myRobotID == "a-car2") {
-                motorIterations2 = 0;
-            }
+            setTickCounter(0);
 
-            if (this.robot.body.position.y > 1) { //to activate animation of drone
-                var robot = document.querySelector("#" + this.myRobotID);
-                robot.setAttribute('animation-mixer', "clip:*;timeScale:1.5");
-
-            } else {
-                  var robot = document.querySelector("#" + this.myRobotID);
-                  robot.setAttribute('animation-mixer', "clip:None");
-            }
-        }
-        this.timeoutMotors = setTimeout(this.setVelocity.bind(this), 20);
+        setTimeout(this.auxiliaryPhysics.bind(this), 20);
     }
 
     controladorPDVerticalVel() {
@@ -295,7 +276,7 @@ export class RobotI {
 
         this.errorActualY = this.velocity.y - this.robot.body.velocity.y; // Si todavía no he alcanzado el objetivo, será negativo
         this.derivadaErrorY = this.errorActualY - this.errorY;
-        this.errorY = errorActualY;
+        this.errorY = this.errorActualY;
         this.forcePD = kp*this.errorActualY + kd*this.derivadaErrorY;
         this.accelerationPD = this.forcePD / mass;
 
@@ -365,17 +346,50 @@ export class RobotI {
         return this.accelerationPD;
     }
 
+    setVelocity() {
+        /*
+          This code run continiously, setting the speed of the robot every 30ms
+          This function will not be callable, use setV, setW or setL
+        */
+       var robot;
+        if (this.robot.body.position.y > 1) { //to activate animation of drone
+            robot = document.querySelector("#" + this.myRobotID);
+            robot.setAttribute('animation-mixer', "clip:*;timeScale:1.5");
+        } else {
+            robot = document.querySelector("#" + this.myRobotID);
+            robot.setAttribute('animation-mixer', "clip:None");
+        }
+        //let rotation = this.getRotation();
+        //let newpos = this.updatePosition(rotation, this.velocity, this.robot.body.position);
+        //this.robot.body.position.set(newpos.x, newpos.y, newpos.z);
+        //this.robot.body.angularVelocity.set(this.velocity.ax, this.velocity.ay, this.velocity.az);
+
+        this.timeoutMotors = setTimeout(this.setVelocity.bind(this), 50);
+    }
+
+    updatePosition(rotation, velocity, robotPos) {
+        if(simEnabled){
+            let x = velocity.x / 10 * Math.cos(rotation.y * Math.PI / 180);
+            let z = velocity.x / 10 * Math.sin(-rotation.y * Math.PI / 180);
+            let y = (velocity.y / 10);
+            robotPos.x += x;
+            robotPos.z += z;
+            robotPos.y += y;
+        }
+        return robotPos;
+    }
+
     getCameraDescription() {
-    /*
-      Returns width and height for the robot camera.
-    */
+        /*
+          Returns width and height for the robot camera.
+        */
         return {width: this.canvas2d.width, height: this.canvas2d.height};
     }
 
     getImageDescription() {
-    /*
-      Returns an object with width and height of the robot image.
-    */
+        /*
+          Returns an object with width and height of the robot image.
+        */
         return {width: this.imagedata.cols, height: this.imagedata.rows};
     }
 
@@ -412,7 +426,7 @@ export class RobotI {
             console.log(this.camerasData[i]);
 
         }*/
-        if (!cameraID || (this.camerasData.length == 1) || (cameraID > this.camerasData.length - 1)) {
+        if (!cameraID || (this.camerasData.length === 1) || (cameraID > this.camerasData.length - 1)) {
             // Robots with one camera get the only one available
             // Requests for cameras that don't exist returns default camera
             return this.camerasData[0]['image'];
@@ -425,12 +439,12 @@ export class RobotI {
     }
 
     getImageData_async(cameraID) {
-    /*
-      This function stores image from the robot in the variable
-      "imagedata", this allows to obtain image from the robot
-      with getImage() function.
-    */
-        if (this.simulationEnabled) {
+        /*
+          This function stores image from the robot in the variable
+          "imagedata", this allows to obtain image from the robot
+          with getImage() function.
+        */
+        if (simEnabled) {
             for (var i = 0; i < this.camerasData.length; i++) {
                 this.camerasData[i]['image'] = cv.imread(this.camerasData[i]['canvasID']);
             }
@@ -439,13 +453,13 @@ export class RobotI {
     }
 
     startRaycasters(distance, numOfRaycasters) {
-    /*
-      This function enables/disbles raycasters (position sensors)
-      for the robot.
+        /*
+          This function enables/disbles raycasters (position sensors)
+          for the robot.
 
-      @distance (Number): Distance which the rays will detect objects.
-      @numOfRaycasters (Numbrer): Number of Raycaster.
-    */
+          @distance (Number): Distance which the rays will detect objects.
+          @numOfRaycasters (Numbrer): Number of Raycaster.
+        */
         if (!this.activeRays) {
             console.log("LOG ---------> Starting sound sensors");
             let emptyEntity = document.querySelector("a-scene");
@@ -478,9 +492,9 @@ export class RobotI {
     }
 
     createRaycaster(distance, angle, emptyEntity, group, number) {
-    /*
-      This function appends raycasters entities to the robot.
-    */
+        /*
+          This function appends raycasters entities to the robot.
+        */
         let newRaycaster = document.createElement('a-entity');
         newRaycaster.setAttribute('raycaster', 'objects', '.collidable');
         newRaycaster.setAttribute('raycaster', 'far', distance);
@@ -501,9 +515,9 @@ export class RobotI {
     }
 
     stopRaycasters() {
-    /*
-      This function erases all raycasters for the robot.
-    */
+        /*
+          This function erases all raycasters for the robot.
+        */
         var emptyEntity = document.querySelector("#positionSensor");
         while (emptyEntity.firstChild) {
             this.removeListeners(emptyEntity.firstChild);
@@ -514,9 +528,9 @@ export class RobotI {
     }
 
     setListener() {
-    /*
-      This function sets up intersection listeners for each raycaster.
-    */
+        /*
+          This function sets up intersection listeners for each raycaster.
+        */
         for (var i = 0; i < this.raycastersArray.length; i++) {
             this.raycastersArray[i].addEventListener('intersection-detected-' + this.raycastersArray[i].id,
                 this.updateDistance.bind(this));
@@ -527,9 +541,9 @@ export class RobotI {
     }
 
     removeListeners(raycaster) {
-    /*
-      This function disables intersection listeners.
-    */
+        /*
+          This function disables intersection listeners.
+        */
         raycaster.removeEventListener('intersection-detected-' + raycaster.id, () => {
             console.log("removed");
         });
@@ -539,21 +553,21 @@ export class RobotI {
     }
 
     updateDistance(evt) {
-    /*
-      This function is called when an intersection is detected and updates the distance
-      to the point of intersection.
-    */
+        /*
+          This function is called when an intersection is detected and updates the distance
+          to the point of intersection.
+        */
         let id = evt.target.id;
         let targetClass = evt.target.classList[0];
 
-        if (this.distanceArray[targetClass].length == 0) {
+        if (this.distanceArray[targetClass].length === 0) {
 
             this.distanceArray[targetClass].push({id: id, d: evt.detail});
         } else {
             let found = false;
             let j = 0;
             while ((j < this.distanceArray[targetClass].length) && !found) {
-                if (this.distanceArray[targetClass][j].id == id) {
+                if (this.distanceArray[targetClass][j].id === id) {
                     this.distanceArray[targetClass][j].d = evt.detail;
                     found = true;
                 }
@@ -566,10 +580,10 @@ export class RobotI {
     }
 
     eraseDistance(evt) {
-    /*
-      This function is called when the intersection is cleared and
-      removes the distance from the array.
-    */
+        /*
+          This function is called when the intersection is cleared and
+          removes the distance from the array.
+        */
         let id = evt.target.id;
         let targetClass = evt.target.classList[0];
 
@@ -582,26 +596,53 @@ export class RobotI {
 
 
     getDistance() {
-    /*
-      This function returns the distance for the raycaster in the center of the arc of rays.
-    */
-        if (this.distanceArray["center"][0] != null) {
-            return this.distanceArray["center"][0].d;
+        /*
+          This function returns the distance for the raycaster in the center of the arc of rays.
+        */
+
+        var distances = this.getDistances();
+
+        if (distances[13] !== 10 || distances[14] !== 10 || distances[15] !== 10 || distances[16] !== 10 || distances[17] !== 10) {
+            let distance0 = 100;
+            let distance1 = 100;
+            let distance2 = 100;
+            let distance3 = 100;
+            let distance4 = 100;
+            if (distances[13] !== 10) {
+                distance0 = distances[13];
+            }
+            if (distances[14] !== 10) {
+                distance1 = distances[14];
+            }
+            if (distances[15] !== 10) {
+                distance2 = distances[15];
+            }
+            if (distances[16] !== 10) {
+                distance3 = distances[16];
+            }
+            if (distances[17] !== 10) {
+                distance4 = distances[17];
+            }
+            let min_distances = [distance0, distance1, distance2, distance3, distance4];
+            Array.min = function(array) {
+                return Math.min.apply(Math, array);
+            };
+            return Array.min(min_distances);
         } else {
             return 10;
         }
     }
 
     getDistances() {
-    /*
-      This function returns an array with all the distances detected by the rays.
-    */
-        var distances = []
+        /*
+          This function returns an array with all the distances detected by the rays.
+        */
+        var distances = [];
         for (var i = 0; i <= 31; i++) {
             distances.push(10);
         }
         var groups = ["center", "right", "left"];
-        for (var i = 0; i < groups.length; i++) {
+        for (i = 0; i < groups.length; i++) {
             this.distanceArray[groups[i]].forEach((obj) => {
                 if (typeof obj.d != "undefined") {
                     distances[obj.id] = obj.d;
@@ -612,10 +653,10 @@ export class RobotI {
     }
 
     getPosition() {
-    /*
-      This function returns an object with X-Y-Z positions and rotation (theta)
-      for the Y axis.
-    */
+        /*
+          This function returns an object with X-Y-Z positions and rotation (theta)
+          for the Y axis.
+        */
         let x = this.robot.object3D.position.x;
         let y = this.robot.object3D.position.y;
         let z = this.robot.object3D.position.z;
@@ -637,13 +678,13 @@ export class RobotI {
         }
     }
 
-    getObjectColor(colorAsString)
+    getColoredObject(colorAsString) {
     /*
       This function filters an object in the scene with a given color passed as string, uses OpenCVjs
       to filter by color and calculates the center of the object and the area.
 
       Returns center: CenterX (cx), CenterY (cy) and the area of the object detected in the image.
-    */ {
+    */
         var image = this.getImage();
         var colorCodes = this.getColorCode(colorAsString);
         var binImg = new cv.Mat();
@@ -659,26 +700,54 @@ export class RobotI {
 
         cv.inRange(image, lowThresh, highThresh, binImg);
         cv.findContours(binImg, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
-        if (contours.size() > 0) {
 
-            let stored = contours.get(0);
-            var objArea = cv.contourArea(stored, false);
+        var contoursDict = {};
+        var contoursArray = [];
+        var nareas = 0;
+        for (let i = 0; i < contours.size(); ++i) {
+            let p1 = new cv.Point(0,0);
+            let p2 = new cv.Point(0,0);
+            var dict = {}
 
-            let moments = cv.moments(stored, false);
-            var cx = moments.m10 / moments.m00;
-            var cy = moments.m01 / moments.m00;
+            if (contours.size() > 0) {
+                nareas++;
+                let stored = contours.get(i);
+                var objArea = cv.contourArea(stored, false);
 
+                let moments = cv.moments(stored, false);
+                var cx = moments.m10 / moments.m00;
+                var cy = moments.m01 / moments.m00;
+
+                let square = cv.boundingRect(stored);
+
+                p1 = new cv.Point(square.x, square.y);
+                p2 = new cv.Point(square.x+square.width, square.y+square.height);
+
+                dict = {center: [parseInt(cx), parseInt(cy)], area: parseInt(objArea), corner1: [parseInt(p1.x), parseInt(p1.y)], corner2: [parseInt(p2.x), parseInt(p2.y)]};
+                contoursArray.push(dict);
+            }
         }
-        return {center: [parseInt(cx), parseInt(cy)], area: parseInt(objArea)};
+
+        contoursDict["areas"] = nareas;
+        contoursDict["details"] = contoursArray;
+        //cv.imshow('outputCanvas', binImg);
+        return contoursDict;
     }
 
     getObjectColorRGB(lowval, highval) {
-    /*
-      This function filters an object in the scene with a given color, uses OpenCVjs to filter
-      by color and calculates the center of the object.
+        /*
+          This function filters an object in the scene with a given color, uses OpenCVjs to filter
+          by color and calculates the center of the object.
 
-      Returns center: CenterX (cx), CenterY (cy) and the area of the object detected in the image.
-    */
+          Returns center: CenterX (cx), CenterY (cy) and the area of the object detected in the image.
+        */
+
+        if (lowval.length == 3) {
+            lowval.push(0);
+        }
+        if (highval.length == 3) {
+            highval.push(255);
+        }
         var image = this.getImage();
         var binImg = new cv.Mat();
         var M = cv.Mat.ones(5, 5, cv.CV_8U);
@@ -706,8 +775,20 @@ export class RobotI {
         return {center: [parseInt(cx), parseInt(cy)], area: parseInt(objArea)};
     }
 
-    getObjectColorPosition(position, color) {
-        let image = this.getObjectColor(color);
+    //getObjectColorPosition(color) {
+        //let image = this.getObjectColor(color);
+        //if (position === 'X') {
+        //    return image.center[0];
+        //} else if (position === 'Y') {
+        //    return image.center[1];
+        //} else {
+        //    return image.area;
+        //}
+        //return image.area
+    //}
+
+    getObjectColorPositionRGB(position, valuemin, valuemax) {
+        let image = this.getObjectColorRGB(valuemin, valuemax);
         if (position === 'X') {
             return image.center[0];
         } else if (position === 'Y') {
@@ -718,10 +799,10 @@ export class RobotI {
     }
 
     getColorCode(color) {
-    /*
-      This function returns binary values for the color if the color is on the
-      array of colors that robot can filter.
-    */
+        /*
+          This function returns binary values for the color if the color is on the
+          array of colors that robot can filter.
+        */
         if (this.understandedColors[color]) {
             var low = this.understandedColors[color].low;
             var high = this.understandedColors[color].high;
@@ -730,11 +811,11 @@ export class RobotI {
     }
 
     followLine(lowval, highval, speed) {
-    /*
-      This function is a simple implementation of follow line algorithm, the robot filters an object with
-      a given color and follows it.
-    */
-        if (this.simulationEnabled) {
+        /*
+          This function is a simple implementation of follow line algorithm, the robot filters an object with
+          a given color and follows it.
+        */
+        if (simEnabled) {
             var data = this.getObjectColorRGB(lowval, highval); // Filters image
 
             this.setV(speed);
@@ -752,14 +833,14 @@ export class RobotI {
     }
 
     readIR(reqColor) {
-    /*
-      This function filters an object on the robot image and returns 0-1-2-3 depending of the
-      position of the center on X axis for the detected object.
-    */
+        /*
+          This function filters an object on the robot image and returns 0-1-2-3 depending of the
+          position of the center on X axis for the detected object.
+        */
         var outputVal = 3;
-        var image = this.getImage();
+        var image = this.getImage("camera-IR");
         var binImg = new cv.Mat();
-        var colorCodes = this.getColorCode(reqColor);
+        var colorCodes = this.getColorCode("black");
         var contours = new cv.MatVector();
         var hierarchy = new cv.Mat();
         let dst = new cv.Mat();
@@ -782,9 +863,9 @@ export class RobotI {
 
             if (isNaN(cx)) {
                 outputVal = 3;
-            } else if ((cx <= 150) && (cx >= 93)) {
+            } else if ((cx <= 150) && (cx >= 85)) {
                 outputVal = 2;
-            } else if ((cx >= 0) && (cx <= 57)) {
+            } else if ((cx >= 0) && (cx <= 65)) {
                 outputVal = 1;
             } else {
                 outputVal = 0;
@@ -807,15 +888,23 @@ export class RobotI {
     }
 
     async avanzarHasta(distance) {
-        this.advanceTo(distance);
+        await this.advanceTo(distance);
     }
 
     girar(turningSpeed) {
         return this.setW(turningSpeed);
     }
 
-    async girarHasta(angle) {
-        this.turnUpTo(angle);
+    async girarHasta(angle, status) {
+        await this.turnUpTo(angle);
+    }
+
+    async subir(distance) {
+        this.upTo(distance)
+    }
+
+    async bajar(distance) {
+        this.downTo(distance);
     }
 
     async aterrizar() {
