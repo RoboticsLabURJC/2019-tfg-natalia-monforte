@@ -1,0 +1,43 @@
+\chapter{Objetivos}
+\label{chap:objetivos} 
+En este capítulo se explican los objetivos del presente trabajo, la metodología que se ha seguido para alcanzar dichos objetivos y la planificación que se ha llevado durante el proceso de investigación.
+   
+\section{Objetivos}
+El principal objetivo de este Trabajo de Fin de Grado es la mejora de las habilidades de desarrollo software mediante diversas actividades de programación. \newline
+
+
+
+Con este fin, se han abordado las siguientes tareas:
+\begin{itemize}
+    \item Exploración del simulador \textit{WebSim} y creación de nuevos mundos para el desarrollo de ejercicios más variados.
+    \item Exploración de la tecnología \textit{A-Frame} para la construcción de nuevos escenarios.
+    \item Exploración del motor de físicas de \textit{CANNON} para desarrollar unas físicas más realistas para el simulador \textit{WebSim}.
+\end{itemize}
+
+\section{Metodología y planificación}
+Con el fin de asegurar el correcto desarrollo del Trabajo de Fin de Grado se estableció una reunión semanal con el tutor para compartir los progresos realizados durante la semana y en la que el tutor me pudo orientar sobre dónde dirigir los esfuerzos cada semana. Paralelamente a las reuniones semanales, también se ha contado con un canal de slack en el que se encuentran todos los contibuyentes del entorno \textit{Kibotics} en el que se han podido plantear todo tipo de dudas durante el proceso de aprendizaje. \newline
+
+El proceso de elaboración del Trabajo de Fin de Grado se ha divido en cinco fases distintas:
+\begin{itemize}
+    \item \textbf{FASE 0:} aprendizaje y primera toma de contacto con las tecnologías web necesarias para la elaboración del trabajo. Especialmente \textit{A-Frame y JavaScript}.
+    \item \textbf{FASE 1:} estudio del código de \textit{Kibotics-WebSim}.
+    \item \textbf{FASE 2:} creación de los primeros mundos utilizando las funcionalidades proporcionadas por \textit{Blender y A-Frame}.
+    \item \textbf{FASE 3:} estudio de las físicas de \textit{A-Frame} (motor de \textit{CANNON}) y elaboración de un motor de físicas complementario para el simulador \textit{WebSim}.
+    \item \textbf{FASE 4:} creación de nuevos ejercicios para incluir en la plataforma.
+\end{itemize}
+
+
+También se ha elaborado un blog en el que se han ido compartiendo los resultados y el trabajo que se ha realizado cada semana. El blog se ha implementado gracias al dominio gratuito que ofrece Github para crear un blog\footnote{https://roboticslaburjc.github.io/2019-tfg-natalia-monforte/}. En el README de mi Github se ha incluido un enlace pinchable para acceder a dicho blog\footnote{https://github.com/RoboticsLabURJC/2019-tfg-natalia-monforte}. \newline
+
+
+Para integrar el código de las mejoras o aportaciones realizadas al código fuente de \textit{Kibotics}, cabe destacar que se ha utilizado el sistema que ofrece Github para integrar código mediante la creación de nuevas ramas y parches. Para que los desarrolladores pudiesen añadir las nuevas funcionalidades al código fuente de \textit{Kibotics}, se creaba una nueva rama actualizada con los últimos cambios de la rama
+principal. Sobre esta rama se desarrollaba la solución a cada incidencia. Una vez incluidos los cambios se explicaban en un comentario o commit y se subían a la nueva rama creada del repositorio de \textit{Kibotics}. El siguiente paso consistía en solicitar la fusión de los cambios de esta rama con
+la rama principal, abriendo peticiones pull request o parches. Tras la solicitud de la fusión o parche los desarrolladores que cuentan con más experiencia verifican que los cambios son correctos y, si es así, integran los cambios a la rama maestra oficial, dando por resuelta la incidencia. Los comandos necesarios para realizar la integración del código a la rama creada son los siguientes: 
+
+\begin{verbatim}
+    git checkout -b issue-XXX
+    git add -ruta-del-fichero-a-añadir
+    git commit -m "Comentario para el commit"
+    git push -u origin issue-XXX
+\end{verbatim}
+
