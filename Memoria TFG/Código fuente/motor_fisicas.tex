@@ -42,7 +42,7 @@ Se dice que una colisión es elástica cuando, tras el choque, se conserva toda 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.7\textwidth, height=0.4\textwidth]{elastico.png}
-    \caption{Colisión elástica\footnotemark}
+    \caption[Colisión elástica]{Colisión elástica\footnotemark}
     \label{fig:elastico}
 \end{figure}
 \footnotetext{https://www.youtube.com/watch?v=b9iOIr5DYj8}
@@ -54,7 +54,7 @@ Por otro lado, cuando se produce una colisión inelástica el objeto que colisio
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.7\textwidth, height=0.4\textwidth]{colision_inelastica.jpg}
-    \caption{Colisión inelástica\footnotemark}
+    \caption[Colisión inelástica]{Colisión inelástica\footnotemark}
     \label{fig:inelastico}
 \end{figure}
 \footnotetext{Elaboración propia.}
@@ -209,7 +209,7 @@ La actualización de la posición de los robots en función de la velocidad y ro
 }
 
 \normalsize
-La motivación de crear un motor de físicas complementario es que las físicas implementadas no recreaban un movimimento realista y no eran suficientes para lo que se tiene disponible en un robot real. Por ejemplo, los robots reales terrestres tienen que superar la fuerza de rozamiento para poder subir una rampa o los drones deben ser capaces de ejercer la fuerza necesaria para superar la gravedad y emprender el vuelo. Con un motor de físicas realistas, las soluciones implementadas en el simulador serán igualmente válidas para un robot físico y, además, permite la creación de ejercicios mucho más diversos como una pista de hielo (en los que la fricción es extremadamente baja), arena (en los que la fricción es mucho más elevada) o escenarios multinivel con rampas (en los que los robots deberán ejercer fuerzas más grandes que en la superficie plana para poder ascender por la rampa). \newline
+La motivación de crear un motor de físicas complementario es que las físicas implementadas no recreaban un movimiento realista y no eran suficientes para lo que se tiene disponible en un robot real. Por ejemplo, los robots reales terrestres tienen que superar la fuerza de rozamiento para poder subir una rampa o los drones deben ser capaces de ejercer la fuerza necesaria para superar la gravedad y emprender el vuelo. Con un motor de físicas realistas, las soluciones implementadas en el simulador serán igualmente válidas para un robot físico y, además, permite la creación de ejercicios mucho más diversos como una pista de hielo (en los que la fricción es extremadamente baja), arena (en los que la fricción es mucho más elevada) o escenarios multinivel con rampas (en los que los robots deberán ejercer fuerzas más grandes que en la superficie plana para poder ascender por la rampa). \newline
 
 Las implicaciones que tiene la materialización de la gravedad y de la fricción son las siguientes:
 
@@ -245,7 +245,7 @@ de los robots autónomos. Tanto parámetros del modelo de fuerzas (masa, momento
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.7]{Diseño_motor_4.PNG}
-    \caption{Diseño del motor de físicas complementario\footnotemark}
+    \caption[Diseño del motor de físicas complementario]{Diseño del motor de físicas complementario\footnotemark}
     \label{fig:motor_diseño}
 \end{figure}
 \footnotetext{Elaboración propia.}
@@ -301,6 +301,8 @@ Para que el modelo funcione es necesaria la definición de los siguientes parám
                 const fMax = 100;
                 const tMax = 100;
                     
+                    
+                    
                 /* Aceleración lineal y angular máxima */
                 const accelerationMax = fMax / mass;
                 const angularAccelerationMax = tMax / inertia;
@@ -308,6 +310,8 @@ Para que el modelo funcione es necesaria la definición de los siguientes parám
                 /* Aceleración lineal y angular máxima */
                 const linearSpeedMax = 10;
                 const angularSpeedMax= 5; 
+                
+                
 \end{verbatim}
 
 
@@ -323,10 +327,11 @@ El controlador PD es una variante del controlador PID (controlador proporcional,
     \item \textbf{Componente integral: }es una predicción de los errores futuros y se utiliza cuando el componente derivativo no consigue reducir el error del sistema. Su uso es complejo ya que puede producir la desastibilización del sistema.
 \end{itemize}
 
+\clearpage
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.7]{pid.png}
-    \caption{Controlador PID \footnotemark}
+    \caption[Controlador PID]{Controlador PID \footnotemark}
     \label{fig:pid}
 \end{figure}
 \footnotetext{https://es.slideshare.net/quasar.0360.7912/sintonizacion-de-controladores-pid}
@@ -347,7 +352,7 @@ Esta capa del motor incluye cuatro controladores PD diferentes que se ejecutan d
     \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth, height=0.4\textwidth]{controlador_PD_XZ.png}
-    \caption{Diseño controlador PD en velocidad del plano horizontal\footnotemark}
+    \caption[Diseño controlador PD en velocidad del plano horizontal]{Diseño controlador PD en velocidad del plano horizontal\footnotemark}
     \label{fig:esquema_pd_1}
     \end{figure}
     \footnotetext{Elaboración propia.}
@@ -357,17 +362,18 @@ Esta capa del motor incluye cuatro controladores PD diferentes que se ejecutan d
     \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth, height=0.4\textwidth]{controlador_PD_vel_Y.png}
-    \caption{Diseño controlador PD en velocidad del eje vertical\footnotemark}
+\caption[Diseño controlador PD en velocidad del eje vertical]{Diseño controlador PD en velocidad del eje vertical\footnotemark}
     \label{fig:esquema_pd_2}
     \end{figure}
     \footnotetext{Elaboración propia.}
     
     \item \textbf{Controlador PD en velocidad angular horizontal (yaw):} coge como entrada la velocidad angular en ese instante y genera como salida el torque que debe ejercer el robot para alcanzar la velocidad de giro objetivo. 
     
+    \clearpage
     \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth, height=0.4\textwidth]{control_PD_angular_drone.png}
-    \caption{Diseño controlador PD en velocidad angular horizontal para drone\footnotemark}
+\caption[Diseño controlador PD en velocidad angular horizontal para drone]{Diseño controlador PD en velocidad angular horizontal para drone\footnotemark}
     \label{fig:esquema_pd_3}
     \end{figure}
     \footnotetext{Elaboración propia.}
@@ -375,16 +381,18 @@ Esta capa del motor incluye cuatro controladores PD diferentes que se ejecutan d
     \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth, height=0.4\textwidth]{control_PD_angular_tierra.png}
-    \caption{Diseño controlador PD en velocidad angular horizontal para robot terrestre\footnotemark}
+\caption[Diseño controlador PD en velocidad angular horizontal para robot terrestre]{Diseño controlador PD en velocidad angular horizontal para robot terrestre\footnotemark}
     \label{fig:esquema_pd_4}
     \end{figure} 
     \footnotetext{Elaboración propia.}
     
     \item \textbf{Controlador PD en posición para la altura:} coge como entrada la componente Y de la posición en ese instante y genera como salida la fuerza que debe ejercer el robot para mantener una posición de referencia. 
+    
+    \clearpage
     \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth, height=0.4\textwidth]{controlador_PD_pos_Y.png}
-    \caption{Diseño controlador PD en posición para la altura\footnotemark}
+    \caption[Diseño controlador PD en posición para la altura]{Diseño controlador PD en posición para la altura\footnotemark}
     \label{fig:esquema_pd_5}
     \end{figure}
     \footnotetext{Elaboración propia.}
@@ -439,6 +447,7 @@ Para crear el nuevo componente se han utilizado las herramientas que ofrece \tex
 \small {
 \begin{verbatim}
 
+
             /* Registro del nuevo componente */
             AFRAME.registerComponent("iterations", iterationsObj);
             
@@ -454,16 +463,19 @@ Para crear el nuevo componente se han utilizado las herramientas que ofrece \tex
                 }
               }
             }
+            
+            
 \end{verbatim}
 }
 
 \normalsize
 Gracias a la correcta combinación de ambos motores, se consigue que el motor de físicas complementario calcule la fuerza autónoma a aplicar a los robots dinámicos y \textit{CANNON} materialice la gravedad y fricción de la escena. La Figura \ref{fig:combi_motor} muestra la combinación existente actualmente entre ambos motores, que permite que se hable de un motor complementario y no de un motor completo. Cada motor lleva incorporado un reloj de ejecución independiente y, en el caso de \textit{CANNON}, es necesario disponer de un contador de ticks para poder monitorizar su hilo de ejecución.
 
+\clearpage
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.9]{combinacion_motores_2.PNG}
-    \caption{Combinación de los motores de físicas\footnotemark}
+    \caption[Combinación de los motores de físicas]{Combinación de los motores de físicas\footnotemark}
     \label{fig:combi_motor}
 \end{figure}
 \footnotetext{Elaboración propia.}
@@ -474,6 +486,8 @@ A continuación se incluyen los fragmentos de código que ha sido necesario incl
 \textbf{Adición de variables a la clase robot ya creada.} De esta manera, el motor complementario es escalable a ejercicios multirobot. Cada robot mantiene un registro propio del valor de sus variables.
 \small {
 \begin{verbatim}
+
+
 
 
                 export class RobotI {
@@ -501,6 +515,11 @@ A continuación se incluyen los fragmentos de código que ha sido necesario incl
                         this.stop = true;
                         this.motorIterations = 0;
                 }
+                
+                
+                
+                
+                
                 
                 
                 
@@ -579,6 +598,10 @@ a aplicar utilizando las fórmulas MRUA y la combinación entre motores */
     this.robot.body.angularVelocity.set(0, this.commandedVelocityW, 0);
     
     setTimeout(this.auxiliaryPhysics.bind(this), 20);
+    
+    
+    
+    
 }
 \end{verbatim}
 }
@@ -684,8 +707,7 @@ cada robot eligiendo valores apropiados para sus parámetros. A continnuación, 
 \label{fig:rampa}
 \end{figure}
     \item \textbf{Fricción = 0.00000001.} El escenario se puede asimilar a una pista de hielo. Cuando se le consigna al robot una instrucción en posición, por ejemplo 'gira 90º a la izquierda', se observa como el robot no es capaz de frenar el movimiento a los 90º a pesar de que su controlador PD angular comienza a comandar fuerzas para tratar de frenarlo. Sin embargo, como la fricción es excesivamente pequeña el controlador tarda más tiempo en lograr frenar el movimiento, tal y como ocurriría en una pista de hielo\footnote{https://www.youtube.com/watch?v=QfPmtPeEL5k}. La Figura \ref{fig:pistahielo} muestra la ejecución de esta instrucción y se observa como el robot finaliza el movimiento prácticamente a los 180º por esta razón.
-    
-\newpage
+
 \begin{figure}[h!]
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth, height=\textwidth]{pistahielo1.png}

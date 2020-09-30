@@ -4,6 +4,7 @@
 \usepackage[a4paper, left=2.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
 \usepackage{times}
 \usepackage{caption}
+\usepackage{tablefootnote}
 \usepackage{subcaption}
 \usepackage[utf8]{inputenc} 
 \usepackage{fancyhdr}
@@ -189,6 +190,10 @@ Tutor : Dr. José María Cañas Plaza \\
 \mbox{}
 \thispagestyle{empty} 
 
+% AGRADECIMIENTOS %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{agradecimientos}
+\normalsize
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ÍNDICES %
 
@@ -206,9 +211,9 @@ Tutor : Dr. José María Cañas Plaza \\
 
 \cleardoublepage
 \pagestyle{fancy}
+\fancyhead[LE,RO]{}
 \setlength{\parindent}{6mm}
 \pagenumbering{arabic} 
-
 
 % RESUMEN %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,51 +1,53 @@
 \chapter{Conclusiones}
 \label{chap:conclusiones} 
-En este apartado se recogen las conclusiones a las que se ha llegado tras la realización de este proyecto de investigación y se van a valorar los resultados obtenidos. De igual forma, tras exponer las conclusiones y valoraciones, se incluirá un apartado en el que se presentarán algunas interesantes líneas futuras para mejorar y completar la implementación realizada.
+En este apartado se recogen las conclusiones a las que se ha llegado tras la realización de este proyecto de investigación y se van a valorar los resultados obtenidos. De igual forma, tras exponer las conclusiones y valoraciones, se presentarán algunas interesantes líneas futuras para mejorar y completar la implementación realizada.
    
 \section{Conclusiones y valoración de resultados}
-El objetivo principal de este trabajo de crear un motor de físicas mejorado para \textit{WebSim} que estuviera basado en tecnologías web y que permitiese dotar al simulador robótico de unas físicas más realistas, se ha cumplido de manera satisfactoria. Se ha implementado un nuevo motor complementario que coexiste con \textit{CANNON} y cuya finalidad es materializar la fuerza autónoma de los robots, dejando como tarea de \textit{CANNON} la materialización de la gravedad, la fricción y la restitución de la escena. \newline
+El objetivo principal de este trabajo era crear un motor de físicas mejorado para \textit{WebSim} que estuviera basado en tecnologías web y que permitiese dotar al simulador robótico de unas físicas más realistas. Se ha cumplido de manera satisfactoria implementando un nuevo motor de físicas complementario que coexiste con \textit{CANNON}. Materializa la fuerza autónoma de los robots, dejando como tarea de \textit{CANNON} la materialización de la gravedad, la fricción y la restitución de la escena para esos mismos robots.\newline
 
-Anteriormente, la materialización de los robots se implementaba por medio de la función \textit{updatePosition}, que se encargaba de imponer una posición al robot sin tener en cuenta la gravedad, la fricción ni la restitución. En consecuencia, los robots no se movían de manera realista puesto que se estaba asumiendo una aceleración infinita. Sin embargo, el nuevo motor complementario sí que permite un movimiento realista puesto que al ser complementario a \textit{CANNON}, no elimina el efecto que este introduce debido a la fuerza de gravedad, de fricción y en las colisiones, abriendo un amplio abanico de nuevas posibilidades de simulación a \textit{WebSim}. \newline 
+Anteriormente, las físicas de los robots se implementaban por medio de la función \textit{updatePosition}, que se encargaba de imponer una posición al robot sin tener en cuenta la gravedad, la fricción ni la restitución. Era un modelo cinemático donde se asumía que los robots adquirían instantáneamente la velocidad ideal que el software del robot ordenaba. En consecuencia, los robots no se movían de manera realista puesto que se estaba asumiendo una aceleración infinita. Sin embargo, el nuevo motor complementario sí que permite un movimiento realista puesto que al ser complementario a \textit{CANNON}, no elimina el efecto que este introduce con la fuerza de gravedad, la fricción y las colisiones, abriendo un amplio abanico de nuevas posibilidades de simulación a \textit{WebSim}. \newline 
 
-El nuevo motor complementario consta de dos niveles. El primero de ellos es un modelo de fuerzas que, a partir de la definición de la masa y el momento de inercia del robot, calcula la aceleración o torque a aplicar para cumplir con las consignas que le llegan del cerebro. El segundo nivel consta de varios controladores PD que se encargan de traducir las velocidades y posiciones que le llegan al motor complementario cada 20 ms en la fuerza autónoma a aplicar al robot.
+El nuevo motor complementario consta de dos niveles. El primero consta de varios controladores PD que se encargan de traducir las velocidades deseadas que le llegan al motor complementario cada 20 ms en la fuerza autónoma a aplicar al robot para que este las alcance. El segundo nivel es un modelo de fuerzas que, a partir de la definición de la masa y el momento de inercia del robot, calcula la aceleración y par resultantes al aplicar la fuerza autónoma decidida por el primer nivel.
 
-Los dos requisitos que se pedían para cumplir este principal objetivo también se han logrado incluir en la implementación:
+Los dos puntos que se pedían para cumplir este principal objetivo también se han logrado en la implementación:
 
 \begin{itemize}
     \item Materialización de robots con distinta masa y que recreen un movimiento autónomo realista, con una aceleración máxima limitada y capacidad de control acotada.
     
-    Este requisito se ha logrado satisfacer mediante la definición de una serie de parámetros que se deben configurar para cada ejercicio y que caracterizarán el movimiento y las físicas del mismo. Algunos de estos atributos son propios de \textit{A-Frame} y otros son parámetros del modelo de fuerzas del nuevo motor complementario. En la tabla \ref{fig:parametros} se incluía el detalle de cada uno de estos parámetros. \newline
+    Este requisito se ha logrado satisfacer mediante la definición de una serie de parámetros que caracterizan el movimiento del robot en un escenario y las físicas del mismo. Se deben configurar para cada ejercicio. Algunos de estos atributos son propios de \textit{A-Frame} y otros son parámetros del modelo de fuerzas del nuevo motor complementario. En la tabla \ref{fig:parametros} se incluía el detalle de cada uno de estos parámetros. \newline
     
     Además de una mejora visual ofreciendo un movimiento más fluido y realista, permite recrear nuevas posibilidades de simulación como por ejemplo:
     
     \begin{itemize}
-        \item [$-$] La variación de la fricción del escenario permite recrear escenarios tan diversos como una pista de hielo.
+        \item [$-$] La variación de la fricción del escenario permite recrear escenarios tan diversos como una pista de hielo o un campo de fútbol por donde rueda la pelota y avanzan los robots.
         \item [$-$] La materialización de la gravedad hace que sea necesario ejercer una fuerza autónoma capaz de superar la fuerza de la gravedad y hacer ascender al drone.
         \item [$-$] La variación de la masa de los robots implica que sea necesario ajustar el resto de parámetros. Por ejemplo, un robot más pesado deberá ejercer una fuerza más grande que un robot más ligero para alcanzar la misma velocidad.
         \item [$-$] Los escenarios podrán incluir rampas, ya que los robots terrestres podrán subirlas si se parametrizan de forma correcta los valores de fricción y fuerza autónoma máxima.
-        \item [$-$] Los robots tienen velocidad lineal y angular límite, al contrario de lo que ocurría con el modelo anterior. Se rompe así con la premisa de aceleración infinita que se ha mantenido hasta el momento.
-        \item [$-$] Por el hecho de que el motor sea complementario, \textit{CANNON} puede materializar la restitución de las colisiones, permitiendo recrear movimientos más realistas como el de una pelota rodando.
+        \item [$-$] Los robots tienen velocidad lineal y angular límite, al contrario de lo que ocurría con el modelo anterior. 
+        \item [$-$] Se rompe con la premisa de aceleración infinita que se ha mantenido hasta el momento por el hecho de no imponer instantáneamente la velocidad deseada. Se tiene una fuerza máxima y, por lo tanto, una aceleración máxima.
+        \item [$-$] Por el hecho de que el motor sea complementario, \textit{CANNON} materializa en paralelo la restitución de las colisiones, permitiendo recrear movimientos más realistas como el golpeo de una pelota.
     \end{itemize}
     
     \item Coexistencia con el motor por defecto \textit{CANNON} y que no requiera la modificación de su código fuente.
     
-    El segundo requisito se consiguió satisfacer gracias a la correcta combinación entre ambos motores que permite que cada uno de ellos materizalice la parte de las físicas que le compete de manera independiente. Para ello, fue necesario conocer el ritmo de ejecución de ambos motores. En el caso del nuevo motor complementario es de 20 ms puesto que se incluyó un \textit{timeout} para establecer ese ritmo; en el caso de \textit{CANNON} fue necesario el registro de un nuevo componente en \textit{A-Frame} que se debe incluir en todas las escenas y que permite monitorizar el ritmo de ejecución del bucle de renderizado de \textit{A-Frame}. En cada iteración del bucle de renderizado, \textit{CANNON} actualiza las posiciones y velocidades de los objetos de la escena. 
+    El segundo punto se consiguió satisfacer gracias a la correcta combinación en el tiempo entre ambos motores que permite que cada uno de ellos materialice la parte de las físicas que le compete de manera independiente. Para ello, fue necesario conocer el ritmo de ejecución de ambos motores. En el caso del nuevo motor complementario es de 20 ms puesto que se incluyó un \textit{timeout} para establecer ese ritmo; en el caso de \textit{CANNON} fue necesario el registro de un nuevo componente auxiliar en \textit{A-Frame} que se debe incluir en todas las escenas y que permite monitorizar el ritmo de ejecución del bucle de renderizado de \textit{A-Frame}. En cada iteración del bucle de renderizado, \textit{CANNON} actualiza las posiciones y velocidades de los objetos de la escena materializando su parte de la dinámica.
 \end{itemize}
 
 El segundo objetivo era crear varios ejercicios en la plataforma educativa Kibotics que sacasen partido del nuevo motor de físicas y fueran más atractivos para los niños. Este objetivo también se ha completado de manera satisfactoria mediante la creación de cuatro escenarios diferentes que explotan las nuevas físicas de realistas de diferentes formas.
 
 \begin{itemize}
     \item Creación de escenarios multinivel gracias a la materialización de la fricción, que permite la subida de rampas: sigue-líneas con rampa y laberinto 3D para mBot.
+    \item Recreación del movimiento efectuado por una pelota rodando gracias a la materialización de la fricción: fútbol competitivo.
     \item Materialización del vuelo de un drone en escenarios con gravedad -9.8: laberinto para drone.
-    \item Materialización de las colisiones que permite ajustar el coeficiente de restitución para hacer más realistas los choques entre objetos y el movimiento de un balón rodando por el suelo: fútbol competitivo.
+    \item Materialización de las colisiones que permite ajustar el coeficiente de restitución para hacer más realistas los choques entre objetos y el golpeo de un balón: fútbol competitivo.
 \end{itemize}
 
 
-\section{Mejoras futuras}
+\section{Líneas futuras}
 La implementación de este nuevo motor de físicas complementario ha supuesto un gran avance en el funcionamiento de \textit{WebSim}. No obstante, aún existen múltiples líneas abiertas que ayudarán a mejorar aún más el entorno \textit{Kibotics}.
 
 \begin{itemize}
-    \item Creación de ejercicios competitivos para cuatro jugadores. Por ejemplo, se propone como punto de partida la extensión del ejercicio fútbol competitivo uno contra uno a un ejercicio competitivo de dos contra dos.
-    \item Exploración del motor de físicas \textit{ammo.js} y extender la implementación del motor complementario basada en \textit{CANNON} a este otro motor. En el futuro, \textit{A-Frame} pasará a utilizar el motor \textit{ammo.js} como motor de físicas por defecto, dejando a un lado el de \textit{CANNON} ya que se preveé que quede obsoleto en los próximos años.
-    \item Adición de efectos de sonido a los ejercicios. Un aspecto que otorgaría aún más realismo al simulador sería la adición de audio en las mismas. Sería de especial interés en ejercicios como el del fútbol competitivo, en el que se podría añadir el efecto del sonido del chute al balón y el del público celebrando un gol.
+    \item Creación de ejercicios competitivos para cuatro jugadores. Por ejemplo, se propone como punto de partida la extensión del ejercicio de fútbol competitivo uno contra uno a un ejercicio competitivo de dos contra dos.
+    \item Exploración del nuevo motor de físicas \textit{ammo.js} y extender la implementación del motor complementario en conjunción con este otro motor. En el futuro, \textit{A-Frame} pasará a utilizar el motor \textit{ammo.js} como motor de físicas por defecto, dejando a un lado el de \textit{CANNON} ya que se preveé que quede obsoleto en los próximos años.
+    \item Adición de efectos de sonido a los ejercicios. Un aspecto que otorgaría aún más realismo al simulador sería la adición de audio en los mismos. Sería de especial interés en ejercicios como el del fútbol competitivo, en el que se podría añadir el efecto del sonido del chute al balón y el del público celebrando un gol.
 \end{itemize}
