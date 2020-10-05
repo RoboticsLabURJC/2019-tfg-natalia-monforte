@@ -1,5 +1,5 @@
 \documentclass[a4paper, 12pt]{book}
-
+\pagestyle{empty}
 \usepackage[spanish]{babel}  % 
 \usepackage[a4paper, left=2.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
 \usepackage{times}
@@ -14,7 +14,7 @@
 
 \usepackage[bookmarks = true, colorlinks=true, linkcolor = black, citecolor = black, menucolor = black, urlcolor = blue]{hyperref}
 
-
+\usepackage{enumerate} 
 \usepackage{url}
 
 \usepackage[dvipdfm]{graphicx}
@@ -188,15 +188,18 @@ Tutor : Dr. José María Cañas Plaza \\
 
 \newpage
 \mbox{}
-\thispagestyle{empty} 
 
 % AGRADECIMIENTOS %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{agradecimientos}
 \normalsize
+
+% RESUMEN %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{resumen}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ÍNDICES %
-
 %%%% Índice de contenidos
 \tableofcontents
 %%%% Índice de figuras
@@ -214,10 +217,6 @@ Tutor : Dr. José María Cañas Plaza \\
 \fancyhead[LE,RO]{}
 \setlength{\parindent}{6mm}
 \pagenumbering{arabic} 
-
-% RESUMEN %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\input{resumen}
 
 % INTRODUCCIÓN %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

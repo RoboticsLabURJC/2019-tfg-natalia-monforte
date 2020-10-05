@@ -1,9 +1,9 @@
 \chapter{Nuevos ejercicios con físicas realistas}
 \label{chap:nuevos_ejercicios} 
-En este capítulo se presentan los nuevos ejercicios que se han creado para enriquecer el contenido ofrecido en el entorno de \textit{Kibotics}. Todos ellos permiten explotar las mejoras que ofrece el motor de físicas complementario implementado.
+A modo de validación experimental, en este capítulo se presentan los nuevos ejercicios que se han creado para enriquecer el contenido educativo ofrecido en el entorno de \textit{Kibotics}. Todos ellos permiten explotar las mejoras que ofrece el motor de físicas complementario implementado.
 
 \section{Sigue-líneas con rampa}
-Este ejercicio\footnote{\url{https://www.youtube.com/watch?v=PjTr13M3o5k}} se basa en la propuesta realizada para la competición \textit{Robocup Junior Australia 2019}\footnote{https://www.robocupjunior.org.au/}. Se trata de una versión mejorada del sigue-líneas tradicional, en el que se incluyen trayectorias más complejas y diversas y dos niveles diferentes conectados a través de una rampa. Actualmente, este ejercicio está disponible en la plataforma \textit{Kibotics} como un ejercicio a resolver en \textit{Python o Scratch} y el robot que se ha seleccionado para su solución ha sido el mBot.  
+Este ejercicio\footnote{\url{https://www.youtube.com/watch?v=PjTr13M3o5k}} se basa en la propuesta realizada para la competición \textit{Robocup Junior Australia 2019}\footnote{https://www.robocupjunior.org.au/}. Se trata de una versión mejorada del sigue-líneas tradicional, en el que se incluyen trayectorias más complejas y diversas, y dos niveles diferentes conectados a través de una rampa. Actualmente, este ejercicio está disponible en la plataforma \textit{Kibotics} como un ejercicio a resolver en \textit{Python o Scratch} y el robot que se ha seleccionado para su solución ha sido el mBot.  
 
 \newpage
 
@@ -41,7 +41,7 @@ El ejercicio  aprovecha las ventajas del motor de físicas complementario en la 
 
 \clearpage
 
-A continuación, en la tabla \ref{tabla:param_ej1}, se recoge el valor de los parámetros del modelo de fuerzas y de  \textit{A-Frame} necesarios para el correcto funcionamiento del motor de físicas complementario y que caracterizan este ejercicio.
+A continuación, en la tabla \ref{tabla:param_ej1}, se recoge el valor de los parámetros del modelo de fuerzas y de  \textit{A-Frame} necesarios para el correcto funcionamiento del motor de físicas complementario en este ejercicio.
 
 \begin{table}[h!]
 \centering
@@ -69,9 +69,9 @@ angularDamping                                 & -1.3                          \
 
 \newpage
 \section{Laberinto 3D para mBot}
-Este segundo ejercicio\footnote{\url{https://www.youtube.com/watch?v=R9JXZCeSNFo}} también se basa en la propuesta realizada para la competición \textit{Robocup Junior Australia 2019}\footnote{https://www.robocupjunior.org.au/}.El objetivo de este ejercicio es hacer llegar al robot al punto en el que se encuentra otro robot perdido para rescatarle del laberinto. \newline
+Este segundo ejercicio\footnote{\url{https://www.youtube.com/watch?v=R9JXZCeSNFo}} también se basa en la propuesta realizada para la competición \textit{Robocup Junior Australia 2019}\footnote{https://www.robocupjunior.org.au/}. El objetivo de este ejercicio es hacer llegar al robot al punto en el que se encuentra otro robot perdido para rescatarle del laberinto. \newline
 
-Este ejercicio está disponible para el mBot en el entorno de \textit{Kibotics} para \textit{Python y Scratch}. Además, al tratarse de un laberinto multinivel, se ve beneficiado por el motor de físicas complementario en la subida de la rampa, igual que ocurría en el ejercicio anterior\footnote{\url{https://www.youtube.com/watch?v=76kgItpMpGk}}.
+Este ejercicio está ya disponible para el mBot en el entorno de \textit{Kibotics} para \textit{Python y Scratch}. Además, al tratarse de un laberinto multinivel, se ve beneficiado por el motor de físicas complementario en la subida de la rampa, igual que ocurría en el ejercicio anterior\footnote{\url{https://www.youtube.com/watch?v=76kgItpMpGk}}.
 
 \begin{figure}[h!]
     \centering
@@ -105,7 +105,7 @@ Este ejercicio está disponible para el mBot en el entorno de \textit{Kibotics} 
 
 \clearpage
 
-A continuación, en la tabla \ref{tabla:param_ej2}, se recoge el valor de los parámetros del modelo de fuerzas y de  \textit{A-Frame} necesarios para el correcto funcionamiento del motor de físicas complementario y que caracterizan este ejercicio.
+A continuación, en la tabla \ref{tabla:param_ej2}, se recoge el valor de los parámetros del modelo de fuerzas y de  \textit{A-Frame} necesarios para el correcto funcionamiento del motor de físicas complementario en este ejercicio.
 
 \begin{table}[h!]
 \centering
@@ -154,7 +154,7 @@ Se han incluido dos ejercicios nuevos para el drone Tello: laberinto para drone 
     \label{fig:laberinto_drone_movimiento}
 \end{figure}
 
-A continuación, en la tabla \ref{tabla:param_ej3}, se recoge el valor de los parámetros del modelo de fuerzas y de  \textit{A-Frame} necesarios para el correcto funcionamiento del motor de físicas complementario y que caracterizan este ejercicio.
+A continuación, en la tabla \ref{tabla:param_ej3}, se recoge el valor de los parámetros del modelo de fuerzas y de  \textit{A-Frame} necesarios para el correcto funcionamiento del motor de físicas complementario en este ejercicio.
 
 \clearpage
 \begin{table}[h!]
@@ -204,7 +204,7 @@ La segunda versión\footnote{\url{https://www.youtube.com/watch?v=9tSqJQ7pqLc}} 
 \end{figure}
 
 \section{Fútbol competitivo}
-Este último ejercicio\footnote{\url{https://www.youtube.com/watch?v=FYtAFll4keU}} también se basa en una de las propuestas presentadas para la competición \textit{Robocup Junior Australia 2019}\footnote{https://www.robocupjunior.org.au/}. El objetivo de este ejercicio competitivo es meter más goles que el contrincante, es decir, simular un partido de fútbol uno contra uno. El primero que llegue a diez goles, será el ganador. Para ello, se ha implementado un evaluador que lleva la cuenta de los goles metidos por cada equipo\footnote{https://www.youtube.com/watch?v=lgwECFpTgNk}(Figura \ref{fig:evaluador}). 
+Este último ejercicio\footnote{\url{https://www.youtube.com/watch?v=FYtAFll4keU}} también se basa en una de las propuestas presentadas para la competición \textit{Robocup Junior Australia 2019}\footnote{https://www.robocupjunior.org.au/}. El objetivo de este ejercicio competitivo es meter más goles que el contrincante, es decir, simular un partido de fútbol uno contra uno. El primero que llegue a diez goles, será el ganador. Para ello, se ha implementado un evaluador que lleva la cuenta de los goles metidos por cada equipo\footnote{\url{https://www.youtube.com/watch?v=lgwECFpTgNk}}(Figura \ref{fig:evaluador}). 
 
 \begin{figure}[h!]
     \centering
@@ -261,7 +261,7 @@ Este ejercicio saca provecho del estudio realizado en las físicas y del motor d
 \label{fig:movimiento_balón}
 \end{figure}
 
-A continuación, en la tabla \ref{tabla:param_ej4}, se recoge el valor de los parámetros del modelo de fuerzas y de  \textit{A-Frame} necesarios para el correcto funcionamiento del motor de físicas complementario y que caracterizan este ejercicio.
+A continuación, en la tabla \ref{tabla:param_ej4}, se recoge el valor de los parámetros del modelo de fuerzas y de  \textit{A-Frame} necesarios para el correcto funcionamiento del motor de físicas complementario en este ejercicio.
 
 \begin{table}[h!]
 \centering

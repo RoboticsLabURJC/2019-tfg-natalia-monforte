@@ -5,7 +5,7 @@ En este capítulo se explica con un mayor grado de detalle qué herramientas han
 \section{Lenguaje \textit{JavaScript}}
 \textit{JavaScript} es un lenguaje de programación interpretado de alto nivel que se encuentra bajo el estándar \textit{ECMAScript}\footnote{Especificación de lenguaje de programación en el que se definen tipos dinámicos y soporte de programación oreintada a objetos}. Este lenguaje es comúnmente conocido por su uso en los scripts de las páginas web. No obstante, dada su orientación a objetos y a ser un lenguaje de programación basada en prototipos y de un solo hilo, es usado en otros muchos entornos externos de la página web: \textit{Node.js, Apache CouchDB o Adobe Acrobat}\footnote{https://developer.mozilla.org/es/docs/Web/JavaScript}. \newline
 
-La sintaxis es similar a la utilizada en \textit{Java} y \textit{C++}. De esta manera, se facilita el aprendizaje del lenguaje ya que está basado en conceptos ya conocidos por el programador. Las estructuras del lenguaje, tales como sentencias condicionales (if y switch) y bucles (while y for), funcionan de una manera muy similar a como lo hacen en otros lenguajes de programación\footnote{\textit{https://developer.mozilla.org/es/docs/Web/JavaScript}}. \newline
+La sintaxis es similar a la utilizada en \textit{Java} y \textit{C++}. De esta manera, se facilita el aprendizaje del lenguaje ya que está basado en conceptos ya conocidos por el programador. Las estructuras del lenguaje, tales como sentencias condicionales (if y switch) y bucles (while y for), funcionan de una manera similar a como lo hacen en otros lenguajes de programación\footnote{\textit{https://developer.mozilla.org/es/docs/Web/JavaScript}}. \newline
 
 Las siguientes características son las principales:
 \begin{itemize}
@@ -16,13 +16,10 @@ Las siguientes características son las principales:
     \item Lenguaje interpretado, es decir, se compila justo-a-tiempo. No es necesario disponer de un compilador adicional, cada navegador incluye un intérprete que se encarga de ejecutar el código.
 \end{itemize}
 
-Este TFG está enteramente programado en \textit{JavaScript}, ya que se trata de una aplicación web que corre en el lado del cliente. Por ello, este lenguaje es el que mejores prestaciones y más necesidades cubre durante el desarrollo de la aplicación.
+Este TFG está enteramente programado en \textit{JavaScript}, ya que se trata de una aplicación web que corre en el lado del cliente. 
 
 \section{Lenguaje \textit{HTML}}
 \textit{HTML} es un lenguaje de marcado que define la estructura de una página web. \textit{HTML} ofrece una serie de elementos que permiten etiquetar diferentes partes de una misma página web en una misma clase para otorgarles una misma apariencia. Además, \textit{HTML} permite cambiar el estilo de las palabras (por ejemplo, a cursiva, a negrita, agrandar o reducir el tamaño de letra, etc)\footnote{https://developer.mozilla.org/es/docs/Learn/Getting$_$started$_$with$_$the$_$web/HTML$_$basics}. \newline
-
-Hoy en día, los navegadores emplean la versión \textit{HTML5}, que introduce como mejora las etiquetas de vídeo, de audio, de diálogos entre personas, de secciones y de bloques de contenidos. \newline
-
 
 Las partes principales del elemento \textit{HTML} son las siguientes:
 \begin{itemize}
@@ -91,7 +88,7 @@ En \textit{JSON}, estas estrucutras se presentan de la siguiente forma:
 
 La plataforma \textit{Kibotics} emplea \textit{JSON} para los ficheros de configuración de los diferentes escenarios utilizados en los ejercicios que ofrece la aplicación. Mediante un \textit{parser} se recopila la información necesaria del fichero de configuración \textit{JSON} para construir el mundo en \textit{A-Frame}.
 
-\section{Blender}
+\section{\textit{Blender}}
 \textit{Blender}\footnote{https://www.blender.org/} es un programa informático multi plataforma, es decir, compatible para distintos sistemas operativos como Windows o Linux. Las funciones principales que se pueden realizar con \textit{Blender} son el modelado, iluminación, renderizado, animación y creación de gráficos tridimensionales. También se pueden realizar actividades relacionadas con la composición de vídeo. 
 
 \begin{figure}[h!]
@@ -101,7 +98,7 @@ La plataforma \textit{Kibotics} emplea \textit{JSON} para los ficheros de config
     \label{fig:blender}
 \end{figure}
 
-Durante el presente trabajo se ha utilizado esta herramienta para modificar la rotación y apariencia de los robots de los que dispone la plataforma \textit{Kibotics}. Además, \textit{Blender} permite exportar los modelos en formato glTF (GL Transmission Format). glTF es un formato de archivo basado en el estandar \textit{JSON}. Pemite la compresión de escenas y modelos 3D para minimizar el tiempo de ejecución de los programas en los que posteriormente se utilicen.
+Durante el presente trabajo se ha utilizado esta herramienta para modificar la rotación y apariencia de los robots de los que dispone la plataforma \textit{Kibotics}. Además, \textit{Blender} permite exportar los modelos en formato glTF (GL Transmission Format). glTF es un formato de archivo basado en el estandar \textit{JSON}. Permite la compresión de escenas y modelos 3D para minimizar el tiempo de ejecución de los programas en los que posteriormente se utilicen.
 
 \section{Entorno \textit{A-Frame}}
 A-Frame es un marco web para crear escenas de realidad virtual en el navegador. Ha sido utilizado por empresas como \textit{Google, Disney, Samsung, Toyota} o \textit{CERN}, entre otras. Además, algunas de ellas, como \textit{Google, Microsoft, Oculus} y \textit{Samsung} han llegado a realizar contribuciones. Sus principales características son las siguientes\footnote{https://aframe.io/docs/1.0.0/introduction/#features}:
@@ -160,7 +157,7 @@ restitution & 0.3               \\ \hline
 \end{table}
 
 \section{Plataforma \textit{Kibotics}}
-La batería de ejercicios que incluye el entorno \textit{Kibotics} se simula usando el simulador robótico \textit{Websim}. Se trata de un simulador diseñado para el aprendizaje de conceptos básicos de programación de robots especialmente para niños. El simulador permite que los usuarios puedan programar fácilmente los movimientos de los robots, ya que simplemente tienen que acceder a la información que recogen sus sensores y enviar las órdenes precisas a los actuadores del robot. Estas órdenes se deberán programar, en\textit{ Python o Scratch}, dentro del editor que incorpora la interfaz de \textit{Websim}. \newline
+La batería de ejercicios que incluye el entorno \textit{Kibotics} se ejecuta usando el simulador robótico \textit{Websim}. Se trata de un simulador diseñado para el aprendizaje de conceptos básicos de programación de robots especialmente para niños. El simulador permite que los usuarios puedan programar fácilmente los movimientos de los robots, ya que simplemente tienen que acceder a la información que recogen sus sensores y enviar las órdenes precisas a los actuadores del robot. Estas órdenes se deberán programar, en\textit{ Python o Scratch}, dentro del editor que incorpora la interfaz de \textit{Websim}. \newline
 
 El simulador está diseñado basándose en el uso del entorno \textit{A-Frame}. A su vez, \textit{A-Frame} se sirve del motor de físicas de \textit{CANNON} para materializar los movimientos de los cuerpos dinámicos en la escena.
 

@@ -1,13 +1,13 @@
 \chapter{Objetivos}
 \label{chap:objetivos} 
-En este capítulo se explican los objetivos del presente trabajo, la metodología que se ha seguido para alcanzarlos y la planificación que se ha llevado durante el proceso de investigación.
+En este capítulo se explican los objetivos del presente trabajo, la metodología que se ha seguido para alcanzarlos y la planificación que se ha llevado durante el proceso de desarrollo.
    
 \section{Objetivos}
 En los mundos de los simuladores que se emplean en docencia robótica hay objetos estáticos, móviles y los propios robots programados por los niños. Los objetivos que persiguen este trabajo son los siguientes:
 
 \begin{itemize}
     \item Desarrollar un motor de físicas basado en \textit{A-Frame} que permita replicar de modo realista el movimiento autónomo de los robots programados por los estudiantes de la plataforma \textit{Kibotics} y que se complemente con \textit{CANNON}, el motor por defecto que materializa la gravedad, rozamiento y los choques.
-    \item Crear varios ejercicios en la plataforma educativa \textit{Kibotics} que saquen partido del nuevo motor de físicas y sean vistosos, incluyendo sus escenarios.
+    \item Crear varios ejercicios en la plataforma educativa \textit{Kibotics} que saquen partido del nuevo motor de físicas y sean vistosos, incluyendo sus escenarios y que sirvan de validación experimental.
 \end{itemize}
 
 Además, estos objetivos deben satisfacerse cumpliendo los siguientes requisitos:
@@ -27,14 +27,14 @@ El modelo de desarrollo software seleccionado ha sido el método en cascada. En 
 
 \begin{itemize}
     \item Implementación del movimiento lineal del drone (eje vertical).
-    \item Implementación del movimiento lineal en el plano horizontal.
+    \item Implementación del movimiento lineal para robots terrestres en el plano horizontal.
     \item Implementación de la estabilización del drone cuando se encuentra inmóvil durante el vuelo.
     \item Implementación del movimiento angular para robots terrestres y drones.
 \end{itemize}
 
-Para integrar el código de las mejoras o aportaciones realizadas al código fuente de la plataforma \textit{Kibotics}, cabe destacar que se ha utilizado el sistema que ofrece GitHub para integrar código mediante la creación de nuevas ramas y parches. Para que los desarrolladores pudiesen añadir las nuevas funcionalidades al código fuente oficial de \textit{Kibotics}, se creaba una nueva rama actualizada con los últimos cambios de la rama
+Para integrar el código de las mejoras o aportaciones realizadas al código fuente de la plataforma \textit{Kibotics}, cabe destacar que se ha utilizado el sistema que ofrece GitHub para integrar código mediante la creación de incidencias, de nuevas ramas y de parches. Para que los desarrolladores pudiesen añadir las nuevas funcionalidades al código fuente oficial de \textit{Kibotics}, se creaba una nueva rama actualizada con los últimos cambios de la rama
 principal. Sobre esta rama se desarrollaba la solución a cada incidencia. Una vez incluidos los cambios se explicaban en un comentario o parche y se subían a la nueva rama creada del repositorio de \textit{Kibotics}. El siguiente paso consistía en solicitar la fusión de los cambios de esta rama con
-la rama principal, abriendo peticiones pull request. Tras la solicitud de la fusión del parche los desarrolladores que cuentan con más experiencia verifican que los cambios son correctos y, si es así, integran los cambios a la rama maestra oficial, dando por resuelta la incidencia. Los comandos necesarios para realizar la integración del código a la rama creada son los siguientes: 
+la rama principal, abriendo peticiones \textit{pull request}. Tras la solicitud de la fusión del parche los desarrolladores que cuentan con más experiencia verifican que los cambios son correctos y, si es así, integran los cambios a la rama maestra oficial, dando por resuelta la incidencia. Los comandos necesarios para realizar la integración del código a la rama creada son los siguientes: 
 
 \begin{verbatim}
                 git checkout -b issue-XXX
@@ -46,9 +46,8 @@ la rama principal, abriendo peticiones pull request. Tras la solicitud de la fus
 \section{Plan de trabajo}
 El proceso de elaboración del Trabajo de Fin de Grado se ha divido en cinco fases distintas:
 \begin{itemize}
-    \item \textbf{FASE 0:} aprendizaje y primera toma de contacto con las tecnologías web necesarias para la elaboración del trabajo. Especialmente \textit{A-Frame y JavaScript}.
-    \item \textbf{FASE 1:} estudio del código de \textit{Kibotics-WebSim}.
-    \item \textbf{FASE 2:} estudio de las físicas de \textit{A-Frame} (motor de \textit{CANNON}) y elaboración de un motor de físicas complementario para el simulador \textit{WebSim}.
-    \item \textbf{FASE 3:} creación de los primeros mundos utilizando las funcionalidades proporcionadas por \textit{Blender y A-Frame}.
-    \item \textbf{FASE 4:} creación de nuevos ejercicios para incluir en la plataforma.
+    \item \textbf{FASE 1:} aprendizaje y primera toma de contacto con las tecnologías web necesarias para la elaboración del trabajo. Especialmente \textit{A-Frame y JavaScript}.
+    \item \textbf{FASE 2:} estudio del código de \textit{Kibotics-WebSim} y de las físicas de \textit{A-Frame} (motor de \textit{CANNON}).
+    \item \textbf{FASE 3:} Elaboración de un motor de físicas complementario para el simulador \textit{WebSim}.
+    \item \textbf{FASE 4:} creación de los primeros mundos utilizando las funcionalidades proporcionadas por \textit{Blender y A-Frame} y creación de nuevos ejercicios para incluir en la plataforma.
 \end{itemize}

@@ -2,13 +2,13 @@
 \label{chap:motor_fisicas} 
 
 
-En este capítulo se va a explicar el diseño, implementación y funcionamiento del nuevo motor de físicas complementario que se ha creado y que actualmente está en producción en el entorno \textit{Kibotics}. Como se detallará más adelante, el nuevo motor va a permitir disponer de unas físicas más realistas en los ejercicios y simular nuevos escenarios, como rampas o pistas de hielo, ya que la gravedad y la fricción van a estar contempladas en la simulación. Además, se ganará escalabilidad a la hora de probar las soluciones de los ejercicos simulados en robots reales, puesto que los factores que presenta un robot físico (por ejemplo: masa, momento de incercia o velocidad máxima) o una escena real (por ejemplo: rozamiento estático, rozamiento dinámico, restitución o gravedad) van a ser parámetros que se puedan materializar gracias a las novedades introducidas.
+En este capítulo se va a explicar el diseño, implementación y funcionamiento del nuevo motor de físicas complementario que se ha creado y que actualmente está en producción en el entorno \textit{Kibotics}. Como se detallará más adelante, el nuevo motor permite disponer de unas físicas más realistas en los ejercicios y simular nuevos escenarios, como rampas o pistas de hielo, ya que la gravedad y la fricción van a estar contempladas en la simulación. Además, se ganará utilidad a la hora de probar las soluciones de los ejercicos simulados en robots reales, puesto que los factores que presenta un robot físico (por ejemplo: masa, momento de incercia o velocidad máxima) o una escena real (por ejemplo: rozamiento estático, rozamiento dinámico, restitución o gravedad) van a ser parámetros que se puedan materializar en el simulador gracias a las novedades introducidas.
 
 
 \section{Estudios previos: motor de físicas por defecto en \textit{A-Frame}}
 \textit{A-Frame} utiliza por defecto el motor de  \textit{CANNON}\footnote{https://github.com/n5ro/aframe-physics-system} para materializar las físicas. \textit{CANNON} surgió como consecuencia de la necesidad de disponer de un motor de físicas en la web y presenta importantes semejanzas respecto a otros conocidos motores: \textit{three.js} o \textit{ammo.js}. Su ventaja es que su código se encuentra disponible enteramente en red\footnote{http://schteppe.github.io/cannon.js/docs/}, escrito en lenguaje \textit{JavaScript} y que su tamaño de archivo es considerablemente más pequeño que el de otros motores de físicas\footnote{http://schteppe.github.io/cannon.js/}.\newline
 
-A continuación, se detallan las posibilidades que ofrece \textit{A-Frame} para controlar la gravedad, la restitución y la fricción de una escena simulada.
+A continuación se detallan las posibilidades que ofrece \textit{A-Frame} para controlar la gravedad, la restitución y la fricción de una escena simulada.
 
 \subsection{Gravedad} 
 Dado que \textit{WebSim} se basa en la tecnología de \textit{A-Frame}, la gravedad es un parámetro configurable dentro de una escena. Los ficheros de configuración de los escenarios de los ejercicios en formato \textit{JSON} incluyen al principio del código las siguientes líneas que permiten seleccionar el valor deseado para la gravedad.
@@ -19,10 +19,10 @@ Dado que \textit{WebSim} se basa en la tecnología de \textit{A-Frame}, la grave
                     }
 \end{verbatim}
 
-Como se ha mencionado anteriormente, previamente al cambio introducido en las físicas, los ficheros de configuración de los ejercicios soportados en la plataforma tenían definida una gravedad con valor 0. Esta configuración era necesaria para conseguir hacer volar a los drones, puesto que con una gravedad de -9.8 cualquier cuerpo sólido de la escena caía hacia abajo como consecuencia de la atracción de la gravedad, por lo que no era posible hacer volar a los robots. Actualmente, todos los ejercicios están simulados con un valor de gravedad de -9.8.  \newline
+Como se ha mencionado anteriormente, previamente al cambio introducido en las físicas, los ficheros de configuración de los ejercicios soportados en la plataforma tenían definida una gravedad con valor 0. Esta configuración era necesaria para conseguir hacer volar a los drones, puesto que con una gravedad de -9.8 cualquier cuerpo sólido de la escena caía hacia abajo como consecuencia de la atracción de la gravedad, por lo que no era posible hacer volar a los robots. Con el nuevo motor de físicas, todos los ejercicios están simulados con un valor de gravedad de -9.8.  \newline
 
 \subsection{Colisiones}
-Cualquier cuerpo sólido puede colisionar con otro cuerpo incluído en la escena. Las colisiones pueden tener naturaleza elástica o inélastica dependiendo del valor del coeficiente de restitución de los objetos. El coeficiente de restitución es la media de la conservación de la energía cinética cuando se produce un choque entre partículas. Cuando su valor es 1 el choque es perfectamente elástico y cuando es 0, es perfectamente inelástico. 
+Cualquier cuerpo sólido puede colisionar con otro cuerpo incluído en la escena simulada. Las colisiones pueden tener naturaleza elástica o inélastica dependiendo del valor del coeficiente de restitución de los objetos. El coeficiente de restitución es la media de la conservación de la energía cinética cuando se produce un choque entre partículas. Cuando su valor es 1 el choque es perfectamente elástico y cuando es 0, es perfectamente inelástico. 
 
 \begin{equation}
    Coeficiente \,\, de \,\,restitución = \frac{Velocidad \,\, relativa \,\, tras \,\, la \,\, colisión}{Velocidad \,\, relativa \,\, antes \,\, de \,\, la \,\, colisión}
@@ -37,7 +37,7 @@ Cualquier cuerpo sólido puede colisionar con otro cuerpo incluído en la escena
 \end{verbatim}
 
 \subsubsection{Colisiones elásticas}
-Se dice que una colisión es elástica cuando, tras el choque, se conserva toda la energía cinética. Esta se transfiere por completo desde el objeto que colisiona hasta el objeto que ha sido colisionado. En la realidad, en todo choque parte de la energía se disipa en calor, por lo que este tipo de colisiones es cosiderada ideal. Visualmente, el efecto que tiene es que el objeto que colisiona se queda parado y el objeto colisionado comienza a moverse a la velocidad que se movía el objeto que colisionó con él. La Figura \ref{fig:elastico} muestra un ejemplo de colisión elástica.
+Se dice que una colisión es elástica cuando, tras el choque, se conserva toda la energía cinética. Esta se transfiere por completo desde el objeto que colisiona hasta el objeto que ha sido colisionado. En la realidad, en todo choque parte de la energía se disipa en calor, por lo que este tipo de colisiones es considerada ideal. Visualmente, el efecto que tiene es que el objeto que colisiona se queda parado y el objeto colisionado comienza a moverse a la velocidad que se movía el objeto que colisionó con él (si son de la misma masa). La Figura \ref{fig:elastico} muestra un ejemplo de colisión elástica.
 
 \begin{figure}[h!]
     \centering
@@ -45,11 +45,11 @@ Se dice que una colisión es elástica cuando, tras el choque, se conserva toda 
     \caption[Colisión elástica]{Colisión elástica\footnotemark}
     \label{fig:elastico}
 \end{figure}
-\footnotetext{https://www.youtube.com/watch?v=b9iOIr5DYj8}
+\footnotetext{\url{https://www.youtube.com/watch?v=b9iOIr5DYj8}}
 
 
 \subsubsection{Colisiones inelásticas}
-Por otro lado, cuando se produce una colisión inelástica el objeto que colisiona continúa teniendo parte de la energía cinética, otra parte se transfiere al objeto que ha sido colisionado y la parte restante se disipa en forma de calor. En este tipo de choques el efecto visual es que tanto el objeto que colisiona como el objeto colisionado avanzan a la misma velocidad tras el choque. La Figura \ref{fig:inelastico} muestra un ejemplo de colisión inelástica.
+Por otro lado, cuando se produce una colisión inelástica el objeto que colisiona continúa teniendo parte de la energía cinética, otra parte se transfiere al objeto que ha sido colisionado y la parte restante se disipa en forma de calor. En este tipo de choques el efecto visual es que tanto el objeto que colisiona como el objeto colisionado avanzan a cierta velocidad tras el choque. La Figura \ref{fig:inelastico} muestra un ejemplo de colisión inelástica.
 
 \begin{figure}[h!]
     \centering
@@ -60,10 +60,10 @@ Por otro lado, cuando se produce una colisión inelástica el objeto que colisio
 \footnotetext{Elaboración propia.}
 
 \subsubsection{Pruebas de colisiones}
-Se han realizado pruebas de colisiones en tres escenarios diferentes variando el valor del coeficiente de restitución y la masa de los objetos. Los escenarios utilizados han sido los siguientes:
+Se han realizado pruebas de colisiones de \textit{A-Frame} en tres escenarios diferentes variando el valor del coeficiente de restitución y la masa de los objetos. Los escenarios utilizados han sido los siguientes:
 
 \begin{itemize}
-    \item \textbf{Escenario 1:} dos pelotas cayendo por dos rampas.
+    \item \textbf{Escenario 1:} dos pelotas cayendo por sendas rampas.
     \item \textbf{Escenario 2:} una pelota fija en el suelo y otra cayendo por una rampa.
     \item \textbf{Escenario 3:} una pelota cae por una rampa y colisiona con una pared.
 \end{itemize}
@@ -119,8 +119,8 @@ Los resultados obtenidos durante las pruebas se detallan en los Cuadros \ref{fig
 \multicolumn{1}{|c|}{\textbf{Restitution = 1}}   & \multicolumn{1}{c|}{La pelota rebota al entrar en contacto con cualquier superfice de la escena}                                                                                                                                                                                                                                                                                                                      \\ \hline
 \multicolumn{1}{l}{}                            & \multicolumn{1}{l}{}                                                                                                                                                                                                                                                                                                                                                                                                   \\ \hline
 \multicolumn{1}{|l|}{}                          & \multicolumn{1}{c|}{\textbf{Diferente masa}}                                                                                                                                                                                                                                                                                                                                                                           \\ \hline
-\multicolumn{1}{|c|}{\textbf{Restitution = 0}}   & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}- Masa pelota rampa < Masa pelota suelo: ambas pelotas se quedan juntas y paradas\\ - Masa pelota rampa > Masa pelota suelo: ambas pelotas avanzan hacia adelante juntas y a la misma velocidad\end{tabular}}                                                        \\ \hline
-\multicolumn{1}{|c|}{\textbf{Restitution = 0.4}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}- Masa pelota rampa < Masa pelota suelo: la pelota que ha caído por la rampa rebota hacia arriba\\ - Masa pelota rampa > Masa pelota suelo: la pelota que estaba en reposo avanza con más velocidad \\ que la que cayó por la rampa\end{tabular}} \\ \hline
+\multicolumn{1}{|c|}{\textbf{Restitution = 0}}   & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}- Masa pelota rampa $<$Masa pelota suelo: ambas pelotas se quedan juntas y paradas\\ - Masa pelota rampa $>$ Masa pelota suelo: ambas pelotas avanzan hacia adelante juntas y a la misma velocidad\end{tabular}}                                                        \\ \hline
+\multicolumn{1}{|c|}{\textbf{Restitution = 0.4}} & \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}- Masa pelota rampa $<$ Masa pelota suelo: la pelota que ha caído por la rampa rebota hacia arriba\\ - Masa pelota rampa $>$ Masa pelota suelo: la pelota que estaba en reposo avanza con más velocidad \\ que la que cayó por la rampa\end{tabular}} \\ \hline
 \multicolumn{1}{|c|}{\textbf{Restitution = 1}}   & \multicolumn{1}{c|}{La pelota rebota al entrar en contacto con cualquier superfice de la escena}                                                                                                                                                                                                                                                                                                                      \\ \hline
 \end{tabular}
 }
@@ -133,12 +133,12 @@ Los resultados obtenidos durante las pruebas se detallan en los Cuadros \ref{fig
  \resizebox{1.1\textwidth}{!}{  
 \begin{tabular}{cc}
 \hline
-\multicolumn{1}{|c|}{\textbf{}}                 & \multicolumn{1}{c|}{\textbf{Misma masa}}                                                                                       \\ \hline
+\multicolumn{1}{|c|}{\textbf{}}                 & \multicolumn{1}{c|}{\textbf{Pelota con masa grande}}                                                                                       \\ \hline
 \multicolumn{1}{|c|}{\textbf{Restitution = 0}}   & \multicolumn{1}{c|}{Permanece junto a la pared, sin rebote} \\ \hline
 \multicolumn{1}{|c|}{\textbf{Restitution = 0.4}} & \multicolumn{1}{c|}{Sí hay rebote}                                                                       \\ \hline
 \multicolumn{1}{|c|}{\textbf{Restitution = 1}}   & \multicolumn{1}{c|}{El rebote es muy elevado y vuelve a subir la rampa pŕacticamente a la misma velocidad que la bajó}         \\ \hline
                                                 &                                                                                                                                \\ \hline
-\multicolumn{1}{|c|}{}                          & \multicolumn{1}{c|}{\textbf{Diferente masa}}                                                                                   \\ \hline
+\multicolumn{1}{|c|}{}                          & \multicolumn{1}{c|}{\textbf{Pelota con masa pequeña}}                                                                                   \\ \hline
 \multicolumn{1}{|c|}{\textbf{Restitution = 0}}   & \multicolumn{1}{c|}{Permanece junto a la pared, sin rebote}                                                                            \\ \hline
 \multicolumn{1}{|c|}{\textbf{Restitution = 0.4}} & \multicolumn{1}{c|}{Cuanto más pequeña es la masa, más grande es el rebote}                                                                            \\ \hline
 \multicolumn{1}{|c|}{\textbf{Restitution = 1}}   & \multicolumn{1}{c|}{Cuanto más pequeña es la masa, más grande es el rebote}                                                                            \\ \hline
@@ -168,14 +168,14 @@ Los ficheros de configuración de los escenarios de los ejercicios en formato \t
 
 \normalsize
 \subsubsection{Rozamiento estático}
-Dos superficies rígidas en reposo no se desplazan una respecto a la otra siempre y cuando la fuerza paralela al plano tangente sea suficientemente pequeña. Cuando el coeficiente de rozamiento estático de una superifice es excesivamente pequeño, los objetos que se encuentran sobre esa superficie no pueden permanecer en reposo. Una forma de calcular el coeficiente de rozamiento estático es hacer variar la inclinación de una rampa. Cuando se alcanza un ángulo de inclinación con el cual el cuerpo comienza a descender, se dice que se ha llegado al ańgulo critico. A partir del ángulo crítico se puede obtener el coeficiente de rozamiento estático gracias a la siguiente igualdad:
+Dos superficies rígidas en reposo no se desplazan una respecto a la otra y cuando la fuerza paralela al plano tangente es suficientemente pequeña. Cuando el coeficiente de rozamiento estático de una superifice es excesivamente pequeño, los objetos que se encuentran sobre esa superficie sí se mueven con más facilidad. Una forma de calcular el coeficiente de rozamiento estático es hacer variar la inclinación de una rampa. Cuando se alcanza un ángulo de inclinación con el cual el cuerpo comienza a descender, se dice que se ha llegado al ańgulo critico. A partir del ángulo crítico se puede obtener el coeficiente de rozamiento estático gracias a la siguiente igualdad:
 
 \begin{equation}
     tan(angulo \,\, crítico) = coeficiente \,\, de \,\, rozamiento \,\, estático \,\,
 \end{equation}
 
 \subsubsection{Rozamiento dinámico}
-Cuando dos superficies están en contacto, el movimiento de una respecto a la otra genera fuerzas tangenciales llamadas fuerzas de fricción o rozamiento, las cuales tienen sentido opuesto al movimiento. La magnitud de esta fuerza depende del coeficiente de rozamiento dinámico. En \textit{A-Frame}, el rozamiento dinámico se puede configurar utilizando los atributos \textit{linear-damping y angular-damping} a nivel de objeto, además del atributo \textit{friction} a nivel de escena como se ha mencionado anteriormente. 
+Cuando dos superficies están en contacto, el movimiento de una respecto a la otra genera fuerzas tangenciales llamadas fuerzas de fricción o rozamiento, las cuales tienen sentido opuesto al movimiento. La magnitud de esta fuerza depende del coeficiente de rozamiento dinámico. En \textit{A-Frame}, el rozamiento dinámico se puede configurar utilizando los atributos \textit{linear-damping y angular-damping} a nivel de objeto, además del atributo \textit{friction} a nivel de escena, como se ha mencionado anteriormente. 
 
 
 
@@ -186,8 +186,8 @@ Se han realizado diferentes pruebas de fricción colocando un objeto en una ramp
     \item \textbf{Prueba del rozamiento dinámico: } se mantiene fija la inclinación de la rampa y se varía el valor de los atributos \textit{friction, linear-damping y angular-damping}. Con unos valores elevados de esos tres parámetros, los robots no son capaces de subir la rampa. Sin embargo, a medida que se va reduciendo el valor de los atributos los robots comienzan a poder subir la rampa y cada vez lo hacen con mayor facilidad.
 \end{itemize}
 
-\section{Motor de físicas para robots actual}
-Hasta el momento, \textit{WebSim} contaba con un motor de físicas completo. El movimiento de los robots se recreaba mediante la actualización de la posición cada 50 ms en función de la velocidad y la rotación consignada por el usuario. No entraban en juego aceleraciones ni fuerzas. Además, el hecho de actualizar la posición y la velocidad (la velocidad se tomaba de manera instantánea de la última enviada por el cerebro. No existía diferencia entre la velocidad real y la velocidad deseada. Se asumía aceleración infinita) del robot constantemente hacía sobreescribir los cambios que introducía \textit{CANNON}, por lo que las físicas no incluían el efecto de la gravedad, la fricción ni el coeficiente de restitución. \newline 
+\section{Motor de físicas actual para robots en \textit{WebSim}}
+Hasta el momento, \textit{WebSim} contaba con un motor de físicas completo. El movimiento de los robots se recreaba mediante la actualización de la posición cada 50 ms en función de la velocidad y la rotación consignada por el usuario. No entraban en juego aceleraciones ni fuerzas. Además, el hecho de actualizar la posición y la velocidad del robot constantemente (la velocidad se tomaba de manera instantánea de la última enviada por el cerebro software del robot. No existía diferencia entre la velocidad real y la velocidad deseada. Se asumía aceleración infinita del robot) sobreescribía encima de los cambios que introducía \textit{CANNON}, por lo que las físicas no incluían el efecto de la gravedad, la fricción ni el coeficiente de restitución. \newline 
 
 La actualización de la posición de los robots en función de la velocidad y rotación comandadas se realizaba mediante la función \textit{updatePosition}.
 
@@ -209,7 +209,7 @@ La actualización de la posición de los robots en función de la velocidad y ro
 }
 
 \normalsize
-La motivación de crear un motor de físicas complementario es que las físicas implementadas no recreaban un movimiento realista y no eran suficientes para lo que se tiene disponible en un robot real. Por ejemplo, los robots reales terrestres tienen que superar la fuerza de rozamiento para poder subir una rampa o los drones deben ser capaces de ejercer la fuerza necesaria para superar la gravedad y emprender el vuelo. Con un motor de físicas realistas, las soluciones implementadas en el simulador serán igualmente válidas para un robot físico y, además, permite la creación de ejercicios mucho más diversos como una pista de hielo (en los que la fricción es extremadamente baja), arena (en los que la fricción es mucho más elevada) o escenarios multinivel con rampas (en los que los robots deberán ejercer fuerzas más grandes que en la superficie plana para poder ascender por la rampa). \newline
+La motivación de crear un motor de físicas complementario es que las físicas implementadas no recreaban un movimiento realista y no eran suficientes para lo que se tiene disponible en un robot real. Por ejemplo, los robots reales terrestres tienen que superar la fuerza de rozamiento para poder subir una rampa o los drones deben ser capaces de ejercer la fuerza necesaria para superar la gravedad y emprender el vuelo. Con un motor de físicas realistas, las soluciones implementadas en el simulador serán igualmente válidas para un robot físico y, además, permite la creación de ejercicios mucho más diversos, como una pista de hielo (en los que la fricción es extremadamente baja), arena (en los que la fricción es mucho más elevada) o escenarios multinivel con rampas (en los que los robots deberán ejercer fuerzas más grandes que en la superficie plana para poder ascender por la rampa). \newline
 
 Las implicaciones que tiene la materialización de la gravedad y de la fricción son las siguientes:
 
@@ -218,14 +218,13 @@ Las implicaciones que tiene la materialización de la gravedad y de la fricción
     \item \textbf{Materialización de la fricción:} el desplazamiento de los robots no se realiza por imposición de una posición concreta, sino por la aplicación de la fuerza necesaria para alcanzar la velocidad objetivo. Al tener en cuenta la fricción, un robot deberá ejercer más fuerza sobre superficies con altas fricciones y menos fuerza en superficies con fricciones más pequeñas.
 \end{itemize}
 
+\clearpage
 \section{Nuevo motor de físicas complementario}
 \subsection{Diseño}
-Este motor de físicas se utiliza para controlar el movimiento de los cuerpos dinámicos en la escena. Se le denomina complementario puesto que sólo se encarga de aplicar la fuerza autónoma al robot, dejando como tarea de \textit{CANNON} materializar la fricción y la gravedad.
+Este motor de físicas se utiliza para controlar el movimiento de los cuerpos dinámicos en la escena. Se le denomina complementario puesto que sólo se encarga de aplicar la fuerza autónoma al robot, dejando como tarea de \textit{CANNON} materializar las fuerzas de la fricción y la gravedad.
 
 \begin{verbatim}
 Fuerza robot = Fuerza autónoma + Fuerza gravedad + Fuerza fricción
-
-
 \end{verbatim}
 
 \begin{itemize}
@@ -234,17 +233,17 @@ Fuerza robot = Fuerza autónoma + Fuerza gravedad + Fuerza fricción
     \item \underline{Fuerza autónoma:} lo materializa nuestro motor complementario a su propio ritmo (distinto del de Cannon) y teniendo en cuenta las velocidades deseadas que marca en cada instante el código fuente del cerebro programado. El ritmo que se ha fijado ha sido de 20 ms.
 \end{itemize}
 
-Esta idea de motor complementario es opuesta a la implementación que existía hasta el momento. La función \textit{updatePosition} actúaba como un motor completo que sobreescribía a \textit{CANNON}. No existía combinación alguna entre ambos motores. \newline
+Esta idea de motor complementario es radicalmente distinta de la implementación que existía hasta el momento. La función \textit{updatePosition} actúaba como un motor completo que sobreescribía a \textit{CANNON}. No existía combinación alguna entre ambos motores. \newline
 
 
-La arquitectura del motor de físicas complementario presenta dos niveles. El nivel superior conecta directamente con el cerebro de la aplicación, el cual es capaz de dar instrucciones en posición y en velocidad. No obstante, ambos tipos de instrucciones se basan en comandar una velocidad objetivo. En el caso de las instrucciones en posición el robot se moverá a la velocidad objetivo hasta que se alcance la posición consignada en la instrucción y en el caso de las instrucciones en velocidad, el movimiento no termina. Este nivel más alto se basa en un controlador PD que traduce las consignas de velocidad que le llegan del cerebro, en la fuerza necesaria a aplicar al robot para alcanzar dichas consignas. Estas fuerzas son las que entiende el núcleo o nivel más bajo del motor. Conociendo la masa y el momento de incercia, las fuerzas obtenidas se podrán traducir en aceleraciones. La Figura \ref{fig:motor_diseño} muestra un esquema del diseño del motor. \newline
+La arquitectura del motor de físicas complementario presenta dos niveles. El nivel superior conecta directamente con el cerebro software del robot, el cual es capaz de dar continuamente instrucciones en posición y en velocidad. No obstante, ambos tipos de instrucciones se basan en comandar una velocidad objetivo. En el caso de las instrucciones en posición el robot se moverá a la velocidad objetivo hasta que se alcance la posición consignada en la instrucción y en el caso de las instrucciones en velocidad, el movimiento no termina. Este nivel más alto se basa en un controlador PD que traduce las consignas de velocidad que le llegan del cerebro, en la fuerza necesaria a aplicar al robot para alcanzar dichas velocidades consignadas. Estas fuerzas son las que entiende el núcleo o nivel más bajo del motor de físicas. Conociendo la masa y el momento de incercia, las fuerzas obtenidas se podrán traducir en aceleraciones. La Figura \ref{fig:motor_diseño} muestra un esquema del diseño del motor. \newline
 
 Por otro lado, se incluye la tabla \ref{fig:parametros} que introduce a modo de resumen todos los parámetros que caraceterizan el movimiento
-de los robots autónomos. Tanto parámetros del modelo de fuerzas (masa, momento de inercia, fuerza máxima, torque máximo, maxima velocidad lineal, maxima velocidad angular, máxima aceleración lineal y máxima aceleración angular) como parámetros de \textit{A-Frame} (coeficiente de restitución, gravedad, fricción, amortiguación lineal y amortiguación angular).
+de los robots autónomos con el nuevo motor de físicas complementario. Tanto parámetros del modelo de fuerzas (masa, momento de inercia, fuerza máxima, torque máximo, maxima velocidad lineal, maxima velocidad angular, máxima aceleración lineal y máxima aceleración angular) como parámetros de \textit{A-Frame} (coeficiente de restitución, gravedad, fricción, amortiguación lineal y amortiguación angular). Los últimos ya se han explicado y los primeros se describen a continuación.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.7]{Diseño_motor_4.PNG}
+    \includegraphics[scale=0.8]{Diseño_motor_4.PNG}
     \caption[Diseño del motor de físicas complementario]{Diseño del motor de físicas complementario\footnotemark}
     \label{fig:motor_diseño}
 \end{figure}
@@ -252,7 +251,7 @@ de los robots autónomos. Tanto parámetros del modelo de fuerzas (masa, momento
 
 \begin{table}[h!]
 \centering
-\resizebox{10.47cm}{!}{
+\resizebox{15cm}{!}{
 \begin{tabular}{|c|c|}
 \hline
 \multicolumn{2}{|c|}{\textbf{Parámetros del modelo de fuerzas}}                                                                          \\ \hline
@@ -278,14 +277,14 @@ angularDamping         & \begin{tabular}[c]{@{}c@{}}Amortiguación angular \\ (r
 
 \clearpage
 \subsection{Modelo de fuerzas}
-El núcleo del motor de físicas es un modelo de fuerzas en el que, a partir de la definición de la masa y el momento de inercia del robot, se calcula la aceleración o torque a aplicar. De esta manera, un robot muy pesado deberá ejercer una fuerza y, por tanto, una aceleración mayor que un robot más ligero para alcanzar una misma velocidad. \newline
+El núcleo del nuevo motor de físicas es un modelo de fuerzas en el que, a partir de la definición de la masa y el momento de inercia del robot, se calcula la aceleración o torque a aplicar. De esta manera, un robot muy pesado deberá ejercer una fuerza mayor que un robot más ligero para alcanzar una misma velocidad. \newline
 
 Para que el modelo funcione es necesaria la definición de los siguientes parámetros:
 \begin{itemize}
-    \item \textbf{Fuerza máxima:} es la fuerza máxima que se puede aplicar a un robot.
-    \item \textbf{Torque máximo:} es el momento de fuerza máximo que se puede aplicar a un robot, es decir, es la fuerza máxima de giro aplicable.
-    \item \textbf{Velocidad lineal máxima:} es la velocidad lineal máxima que puede alcanzar un robot. Concede realismo al modelo, puesto que termina con la asunción de aceleración infinita.
-    \item \textbf{Velocidad angular máxima:} es la velocidad angular máxima que puede alcanzar un robot. Concede realismo al modelo, puesto que termina con la asunción de aceleración infinita.
+    \item \textbf{Fuerza máxima:} es la fuerza autónoma máxima que puede aplicar un robot. Concede realismo al modelo, puesto que termina con la asunción de aceleración infinita.
+    \item \textbf{Torque máximo:} es el momento autónomo de fuerza máximo que puede aplicar un robot, es decir, es la fuerza máxima de giro aplicable. Concede realismo al modelo, puesto que termina con la asunción de aceleración infinita.
+    \item \textbf{Velocidad lineal máxima:} es la velocidad lineal máxima que puede alcanzar un robot.
+    \item \textbf{Velocidad angular máxima:} es la velocidad angular máxima que puede alcanzar un robot.
     \item \textbf{Masa:} es necesaria para obtener el valor de la aceleración lineal.
     \item \textbf{Momento de inercia:} es la medida de la inercia rotacional cuando un cuerpo gira. Es el equivalente a la masa en un movimiento angular. Es necesario para obtener el valor de la aceleración angular.
 \end{itemize}
@@ -318,12 +317,12 @@ Para que el modelo funcione es necesaria la definición de los siguientes parám
 
 \subsection{Controlador PD}
 \normalsize
-El controlador PD se encarga de la traducción de las velocidades y posiciones que le llegan al motor complementario en cada momento del cerebro a la fuerza autónoma a aplicar al robot. \newline
+El controlador PD se encarga de la traducción de las velocidades deseadas que le llegan al motor complementario en cada momento del cerebro a la fuerza autónoma a aplicar al robot. \newline
 
 El controlador PD es una variante del controlador PID (controlador proporcional, integral y derivativo) que no incluye la componente integral. Se trata de un controlador por realimentación que calcula la desviación o error entre una medida y el valor que se desea obtener. Cada componente tiene una utilidad diferente y depende de distintos factores:
 \begin{itemize}
     \item \textbf{Componente proporcional: }depende del error actual y su función es minimizar el error del sistema.
-    \item \textbf{Componente derivativa: }depende de los errores pasados y permite estabilizar el sitema reduciendo la oscilación del valor de salida.
+    \item \textbf{Componente derivativa: }depende de los errores pasados y permite estabilizar el sistema reduciendo la oscilación del valor de salida.
     \item \textbf{Componente integral: }es una predicción de los errores futuros y se utiliza cuando el componente derivativo no consigue reducir el error del sistema. Su uso es complejo ya que puede producir la desastibilización del sistema.
 \end{itemize}
 
@@ -344,10 +343,10 @@ Mediante un sencillo algoritmo basado en la suma de estos tres componentes, el c
     \label{fig:pid_form}
 \end{figure}
 
-Esta capa del motor incluye cuatro controladores PD diferentes que se ejecutan dependiendo del tipo de robot que esté realizando el movimiento (robot terrestre o drone) y del tipo de movimiento que se efectúe (avance lineal, giro, vuelo o suspensión en el aire). A continuación, se detallan los tipos de controladores que incluye el modelo:
+Esta capa del motor incluye cuatro controladores PD diferentes que se ejecutan dependiendo del tipo de robot que esté realizando el movimiento (robot terrestre o drone) y del tipo de movimiento que se efectúe (avance lineal, giro, vuelo o suspensión en el aire). A continuación, se detallan los cuatro tipos de controladores incluidos.
 
 \begin{itemize}
-    \item \textbf{Controlador PD en velocidad del plano horizontal:} coge como entrada la velocidad resultante del plano horizontal en ese instante y genera como salida la fuerza que debe ejercer el robot para alcanzar la velocidad objetivo. 
+    \item \textbf{Controlador PD en velocidad del plano horizontal:} además de la velocidad horizontal deseada, coge como entrada la velocidad resultante del plano horizontal en ese instante y genera como salida la fuerza que debe ejercer el robot para alcanzar la velocidad objetivo. 
     
     \begin{figure}[h!]
     \centering
@@ -357,7 +356,7 @@ Esta capa del motor incluye cuatro controladores PD diferentes que se ejecutan d
     \end{figure}
     \footnotetext{Elaboración propia.}
     
-    \item \textbf{Controlador PD en velocidad del eje vertical:} coge como entrada la componente vertical de la velocidad en ese instante y genera como salida la fuerza que debe ejercer el robot para alcanzar la velocidad objetivo. 
+    \item \textbf{Controlador PD en velocidad del eje vertical:} además de la velocidad vertical deseada, coge como entrada la componente vertical de la velocidad en ese instante y genera como salida la fuerza que debe ejercer el robot para alcanzar la velocidad objetivo. 
     
     \begin{figure}[h!]
     \centering
@@ -367,7 +366,7 @@ Esta capa del motor incluye cuatro controladores PD diferentes que se ejecutan d
     \end{figure}
     \footnotetext{Elaboración propia.}
     
-    \item \textbf{Controlador PD en velocidad angular horizontal (yaw):} coge como entrada la velocidad angular en ese instante y genera como salida el torque que debe ejercer el robot para alcanzar la velocidad de giro objetivo. 
+    \item \textbf{Controlador PD en velocidad angular horizontal (yaw):} además de la velocidad deseada de guiñada, coge como entrada la velocidad angular en ese instante y genera como salida el torque que debe ejercer el robot para alcanzar la velocidad de giro objetivo. 
     
     \clearpage
     \begin{figure}[h!]
@@ -386,7 +385,7 @@ Esta capa del motor incluye cuatro controladores PD diferentes que se ejecutan d
     \end{figure} 
     \footnotetext{Elaboración propia.}
     
-    \item \textbf{Controlador PD en posición para la altura:} coge como entrada la componente Y de la posición en ese instante y genera como salida la fuerza que debe ejercer el robot para mantener una posición de referencia. 
+    \item \textbf{Controlador PD en posición para la altura:} coge como entrada la componente vertical de la posición en ese instante y genera como salida la fuerza que debe ejercer el robot para mantener una posición de referencia. Se usa cuando la velocidad deseada es cero. El control en velocidad vertical cuando la velocidad consignada es cero tiembla un poco, haciendo que el movimiento del drone pierda realismo. Por esta razón, se ha optado por materializar esa velocidad vertical cero con el control en posición vertical, con el que se obtiene un mejor resultado.
     
     \clearpage
     \begin{figure}[h!]
@@ -402,7 +401,7 @@ De los controladores PD implementados, son específicos para el funcionamiento d
     
 \normalsize
 \subsection{Timing}
-Este concepto es de especial relevancia ya que es el que hace que el motor sea complementario y no completo, es decir, es lo que permite que el motor complementario se combine con el de \textit{CANNON} y no sobreescriba sus modificaciones. \newline
+Este concepto es de especial relevancia ya que es el que hace que el motor sea complementario y no completo, es decir, es lo que permite que el motor complementario se combine satisfactoriamente con el de \textit{CANNON} y no sobreescriba sus modificaciones. \newline
 
 El motor de físicas complementario se ejecuta cada 20 ms gracias a un \textit{timeout} que lo invoca de forma periódica. Pero, ¿cuándo se ejecuta el motor de \textit{CANNON}? 
 
@@ -423,10 +422,10 @@ El motor de físicas complementario se ejecuta cada 20 ms gracias a un \textit{t
 }
 
 \normalsize
-El cómputo de las iteraciones de \textit{CANNON} se ha podido realizar gracias a la creación de un nuevo componente auxiliar que hace incrementar en uno un contador por cada tick de renderizado que ejecuta \textit{A-Frame}. \newline
+El cómputo de las iteraciones de \textit{CANNON} se ha realizado creando un nuevo componente auxiliar que hace incrementar en uno un contador por cada tick de renderizado que ejecuta \textit{A-Frame}. \newline
 
 
-Las variables y funciones que se han añadido al código original para llevar a cabo la implementación han sido las que se incluyen a continuación. Las funciones \textit{tickCounter, getTickCounter y setTickCounter} se han utilizado para contabilizar el número de veces que se ejecuta el motor de \textit{CANNON} entre dos iteraciones del motor complementario.
+Las variables y funciones que se han añadido al código original para llevar a cabo la implementación se incluyen a continuación. Las funciones \textit{tickCounter, getTickCounter y setTickCounter} se han utilizado para contabilizar el número de veces que se ejecuta el motor de \textit{CANNON} entre dos iteraciones del motor complementario.
 
 \small {
 \begin{verbatim}
@@ -442,7 +441,7 @@ Las variables y funciones que se han añadido al código original para llevar a 
 }
 
 \normalsize
-Para crear el nuevo componente se han utilizado las herramientas que ofrece \textit{A-Frame} para el registro de nuevos componentes. La siguiente línea de código realiza el registro del nuevo componente auxiliar que se utiliza para contabilizar las iteraciones de \textit{CANNON}. A continuación, también se ha incluido el código del tick del nuevo componente registrado.
+Para crear el nuevo componente auxiliar se han utilizado las herramientas que ofrece \textit{A-Frame} para el registro de nuevos componentes. La siguiente línea de código realiza el registro del nuevo componente auxiliar que se utiliza para contabilizar las iteraciones de \textit{CANNON}. A continuación, también se ha incluido el código del tick del nuevo componente registrado.
 
 \small {
 \begin{verbatim}
@@ -469,13 +468,13 @@ Para crear el nuevo componente se han utilizado las herramientas que ofrece \tex
 }
 
 \normalsize
-Gracias a la correcta combinación de ambos motores, se consigue que el motor de físicas complementario calcule la fuerza autónoma a aplicar a los robots dinámicos y \textit{CANNON} materialice la gravedad y fricción de la escena. La Figura \ref{fig:combi_motor} muestra la combinación existente actualmente entre ambos motores, que permite que se hable de un motor complementario y no de un motor completo. Cada motor lleva incorporado un reloj de ejecución independiente y, en el caso de \textit{CANNON}, es necesario disponer de un contador de ticks para poder monitorizar su hilo de ejecución.
+Gracias a la correcta combinación temporal de ambos motores, se consigue que el motor de físicas complementario calcule la fuerza autónoma a aplicar a los robots dinámicos y \textit{CANNON} materialice la gravedad y fricción de la escena. La Figura \ref{fig:combi_motor} muestra la combinación existente actualmente entre ambos motores, que permite que se hable de un motor complementario y no de un motor completo. Cada motor lleva incorporado un reloj de ejecución independiente y, en el caso de \textit{CANNON}, es necesario disponer de un contador de ticks para monitorizar su hilo de ejecución.
 
 \clearpage
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.9]{combinacion_motores_2.PNG}
-    \caption[Combinación de los motores de físicas]{Combinación de los motores de físicas\footnotemark}
+    \caption[Combinación de los motores de físicas a lo largo del tiempo]{Combinación de los motores de físicas a lo largo del tiempo\footnotemark}
     \label{fig:combi_motor}
 \end{figure}
 \footnotetext{Elaboración propia.}
@@ -681,15 +680,15 @@ a aplicar utilizando las fórmulas MRUA y la combinación entre motores */
 
 \normalsize
 \section{Validación experimental}
-\subsection{Motor de físicas complementario para robots terrestres}
+\subsection{Simulación realista de robots terrestres}
 El motor de físicas complementario permite dotar a \textit{WebSim} de un motor de físicas más realistas puesto que únicamente actúa sobre la fuerza autónoma del robot, dejando libertad a \textit{CANNON} para materializar tanto fricción como gravedad. Gracias a ello, se simulan mundos en los que los requisitos se asemejan en mayor medida a las características que se encuentran en el mundo real y en los robots físicos. \newline
 
 En consecuencia, se van a poder desarrollar ejercicios más variados como pistas de hielo o ejercicios multinivel con rampas que interconecten los múltiples niveles. El modelo de físicas es ahora mucho más realista, pero hay que configurarlo adecuadamente para
-cada robot eligiendo valores apropiados para sus parámetros. A continnuación, se incluyen varios ejemplos en los que se puede observar como, con una correcta configuración de los atributos, se puede lograr la simulación de situaciones muchos más diversas y realistas:
+cada robot eligiendo valores apropiados para sus parámetros. A continuación, se incluyen varios ejemplos en los que se puede observar cómo, con una correcta configuración de los atributos, se puede lograr la simulación de situaciones muchos más diversas y realistas:
 
 \begin{itemize}
 
-  \item \textbf{Fuerza máxima = 0.1.} No es posible ascender por una rampa dado que la fuerza máxima del mBot no es suficiente para superar la fricción. Esta situación puede solucionarse disminuyendo la fricción de la escena, reduciendo la inclinación de la rampa o aumentando la fuerza máxima del robot\footnote{https://youtu.be/LQk9GLoMIk0}.
+  \item \textbf{Fuerza máxima = 0.1.} No es posible ascender por una rampa dado que la fuerza máxima del mBot no es suficiente para superar la fricción. Esta situación puede solucionarse disminuyendo la fricción de la escena, reduciendo la inclinación de la rampa o aumentando la fuerza máxima del robot\footnote{\url{https://youtu.be/LQk9GLoMIk0}}.
     
     \begin{figure}[h!]
   \begin{subfigure}[b]{0.3\textwidth}
@@ -706,7 +705,7 @@ cada robot eligiendo valores apropiados para sus parámetros. A continnuación, 
 \caption{Subida de rampa con una fuerza máxima insuficiente}
 \label{fig:rampa}
 \end{figure}
-    \item \textbf{Fricción = 0.00000001.} El escenario se puede asimilar a una pista de hielo. Cuando se le consigna al robot una instrucción en posición, por ejemplo 'gira 90º a la izquierda', se observa como el robot no es capaz de frenar el movimiento a los 90º a pesar de que su controlador PD angular comienza a comandar fuerzas para tratar de frenarlo. Sin embargo, como la fricción es excesivamente pequeña el controlador tarda más tiempo en lograr frenar el movimiento, tal y como ocurriría en una pista de hielo\footnote{https://www.youtube.com/watch?v=QfPmtPeEL5k}. La Figura \ref{fig:pistahielo} muestra la ejecución de esta instrucción y se observa como el robot finaliza el movimiento prácticamente a los 180º por esta razón.
+    \item \textbf{Fricción = 0.00000001.} El escenario se puede asimilar a una pista de hielo. Cuando se le consigna al robot una instrucción en posición, por ejemplo 'gira 90º a la izquierda', se observa cómo el robot no es capaz de frenar el movimiento a los 90º a pesar de que su controlador PD angular comienza a comandar fuerzas para tratar de frenarlo. Sin embargo, como la fricción es excesivamente pequeña el controlador tarda más tiempo en lograr frenar el movimiento, tal y como ocurriría en una pista de hielo\footnote{\url{https://www.youtube.com/watch?v=QfPmtPeEL5k}}. La Figura \ref{fig:pistahielo} muestra la ejecución de esta instrucción y se observa cómo el robot finaliza el movimiento prácticamente a los 180º por esta razón.
 
 \begin{figure}[h!]
   \begin{subfigure}[b]{0.5\textwidth}
@@ -750,10 +749,10 @@ Por último, la Figura \ref{fig:vel-planoXZ} muestra la diferencia entre la prog
 \end{figure}
 
 \newpage
-\subsection{Motor de físicas complementario para drones}
+\subsection{Simulación realista de drones}
 El motor de físicas complementario dota a \textit{WebSim} de unas físicas más realistas puesto que permite a \textit{CANNON} materializar la gravedad. Gracias a ello, se pueden simular mundos en los que, a pesar de existir una gravedad de -9.8, la fuerza autónoma que hace aplicar el motor complementario permite volar al drone. \newline
 
-Las físicas realistas implementadas permiten diferenciar entre el despegue de un drone ligero y el de uno mucho más pesado. Por ejemplo, para un fuerza máxima de 1 N, un drone de 1 Kg podrá despegar mientras que otro de 100 Kg no será capaz puesto que la fuerza máxima aplicada no es suficiente para superar la fuerza de la gravedad\footnote{https://www.youtube.com/watch?v=S1E1zKjFkLo}.
+Las físicas realistas implementadas permiten diferenciar entre el despegue de un drone ligero y el de uno mucho más pesado. Por ejemplo, para un fuerza máxima de 1 N, un drone de 1 Kg podrá despegar mientras que otro de 100 Kg no será capaz puesto que la fuerza máxima aplicada no es suficiente para superar la fuerza de la gravedad\footnote{\url{https://www.youtube.com/watch?v=S1E1zKjFkLo}}.
 
 \begin{figure}[h!]
   \centering
@@ -771,7 +770,7 @@ Las físicas realistas implementadas permiten diferenciar entre el despegue de u
 \end{figure}
 
 
-Por otro lado, el control PD en posición incrementa el realismo de las físicas también a nivel visual puesto que hace recrear un movimiento más fluido y no produce una brusca frenada como ocurría con la imposición de la posición con \textit{updatePosition}. La fluidez del movimiento se consigue gracias a la fase de estabilización característica del controlador PD hasta que consigue aproximar su salida al valor de referencia\footnote{https://www.youtube.com/watch?v=jSGI6KJbzTQ}. En la Figura \ref{fig:pos-ejeY} se aprecia como el controlador tarda unos ms en estabilizar la posición y al principio la posición tiende a caer como consecuencia de la atracción de la gravedad. La Figura \ref{fig:vel-ejeY} muestra la progresión de la velocidad a lo largo del tiempo cuando el drone despega.
+Por otro lado, el control PD en posición incrementa el realismo de las físicas también a nivel visual puesto que hace recrear un movimiento más fluido y no produce una brusca frenada como ocurría con la imposición de la posición con \textit{updatePosition}. La fluidez del movimiento se consigue gracias a la fase de estabilización característica del controlador PD hasta que consigue aproximar su salida al valor de referencia\footnote{\url{https://www.youtube.com/watch?v=jSGI6KJbzTQ}}. En la Figura \ref{fig:pos-ejeY} se aprecia cómo el controlador tarda unos ms en estabilizar la posición y al principio la posición tiende a caer como consecuencia de la atracción de la gravedad. La Figura \ref{fig:vel-ejeY} muestra la progresión de la velocidad a lo largo del tiempo cuando el drone despega.
 
 \begin{figure}[h!]
     \centering

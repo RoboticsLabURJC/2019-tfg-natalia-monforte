@@ -22,7 +22,7 @@ Hoy en día, los robots están presentes prácticamente en cualquier ámbito de 
 
 \begin{figure}[!h]
   \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth, height=\textwidth]{roomba.png}
+    \includegraphics[width=\textwidth, height=\textwidth]{roomba.jpg}
     \caption{Roomba}
   \end{subfigure}
     \hfill
@@ -56,19 +56,19 @@ Hoy en día, los robots están presentes prácticamente en cualquier ámbito de 
 
 
 \section{Tecnologías web}
-Las tecnologías web están en continuo desarrollo. Actualmente, existen tecnologías webtanto en el lado del cliente como en el lado del servidor. La idea de esta separación es marcar las diferentes partes de un sistema software para poder controlarlo de una forma más eficaz. Por este motivo, el \textit{frontend} recoge los datos y el \textit{backend} los procesa. \newline
+Las tecnologías web están en continuo desarrollo. Actualmente, existen tecnologías webtanto en el lado del cliente como en el lado del servidor. La idea de esta separación es marcar las diferentes partes de un sistema software para poder controlarlo de una forma más eficaz. Por este motivo, el \textit{frontend} recoge los datos o interactúa con el usuario final y el \textit{backend} procesa esos datos o sirve los contenidos. \newline
 
-Hoy en día, son muy comunes las aplicaciones web que se basan en estas tecnologías. Las aplicaciones web basan su funcionamiento en un modelo cliente - servidor en el que el cliente se encarga de recoger los datos que introduce el usuario y el servidor los procesa. Algunas de las aplicaciones web con más éxito en los últimos años son \textit{Gmail}, \textit{Spotify}, \textit{Netflix}, \textit{Amazon} o \textit{AliExpress}.
+Hoy en día, son muy comunes las aplicaciones web que se basan en estas tecnologías. Las aplicaciones web basan su funcionamiento en un modelo cliente - servidor en el que el cliente se encarga de recoger los datos que introduce el usuario y el servidor los procesa. Gracias a ellas, se puede leer en el navegador web el correo electrónico, ver películas y series, leer el periódico, comprar productos, etc. Algunas de las aplicaciones web con más éxito en los últimos años son \textit{Gmail}, \textit{Spotify}, \textit{Netflix}, \textit{Amazon} o \textit{AliExpress}.
 
 \begin{figure}[!h]
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth, height=\textwidth]{netflix.png}
-    \caption{Aplicación web dedicada a la distribución de contenidos}
+    \caption{Dedicada a la distribución de contenidos}
   \end{subfigure}
         \hfill
   \begin{subfigure}[b]{0.5\textwidth}
     \includegraphics[width=\textwidth, height=\textwidth]{amazon.png}
-    \caption{Aplicación web dedicada a la venta online}
+    \caption{Dedicada a la venta online}
   \end{subfigure}
 \caption{Ejemplos de aplicaciones web}
 \label{fig:ejemplosaplicaciones}
@@ -76,9 +76,9 @@ Hoy en día, son muy comunes las aplicaciones web que se basan en estas tecnolog
 
 Por un lado, el \textit{frontend} engloba todas aquellas tecnologías web del lado del cliente que se encargan de recopilar los datos y mostrárselos al usuario. Principalmente, existen tres tecnologías de \textit{frontend}: \textit{HTML, CSS} y \textit{JavaScript}. Estas tres tecnologías permiten al usuario interactuar con el sevidor web, utilizando un navegador como intérprete. \newline 
 
-Por otro lado, el \textit{backend} se encarga del almacenamiento de información en bases de datos, gestión de servidores y servir las vistas de las páginas web seleccionadas por el desarrollador en el lado del cliente. En el backend, el número de tecnologías es mucho más extenso. La programación \textit{backend} incluye lenguajes como \textit{PHP, Python, .NET o Java }y las bases de datos sobre las que se trabaja pueden ser \textit{SQL, MongoDB o MySQL}. \newline 
+Por otro lado, el \textit{backend} se encarga del almacenamiento de información en bases de datos, gestión de servidores y servir las vistas de las páginas web seleccionadas por el desarrollador en el lado del cliente o servir los contenidos multimedia. En el backend, el número de tecnologías es más extenso. La programación \textit{backend} incluye lenguajes como \textit{PHP, Python, Ruby, .NET o Java }y las bases de datos sobre las que se trabaja habitualmente pueden ser \textit{SQL, MongoDB o MySQL}. \newline 
 
-La comunicación entre cliente y servidor se realiza utilizando el protocolo \textit{HTTP} (protocolo de transferencia de hipertexto). Este protocolo funciona mediante la emisión de una serie de peticiones y respuestas entre el cliente y el servidor usando diferentes métodos. Existen numerosos métodos \textit{HTTP}, pero los más comunes son los siguientes\footnote{https://developer.mozilla.org/es/docs/Web/HTTP/Methods}:
+La comunicación entre cliente y servidor se realiza utilizando el protocolo \textit{HTTP} (protocolo de transferencia de hipertexto). Este protocolo funciona mediante la emisión de una serie de peticiones y respuestas entre el cliente y el servidor usando diferentes métodos. Existen varios métodos \textit{HTTP}, los más comunes son los siguientes\footnote{https://developer.mozilla.org/es/docs/Web/HTTP/Methods}:
 
 \begin{itemize}
     \item \textbf{GET}: solicitud de datos de un recurso concreto.
@@ -98,7 +98,7 @@ La comunicación entre cliente y servidor se realiza utilizando el protocolo \te
 
 \clearpage
 \subsection{Tecnologías web en el lado del cliente}
-Las tres tecnologías web del frontend que permiten la interacción entre usuario y servidor web son las siguientes:
+Las tres tecnologías web del \textit{frontend} que permiten la interacción entre usuario y servidor web son las siguientes:
 \begin{itemize}
     \item \textit{HTML:} es un lenguaje de marcado que permite diferenciar los contenidos y definir la estructura de un sitio web. Permite dividir una página web en diferentes secciones: títulos, texto, imágenes, pie de página, etc. Es la base de toda página web. Sigue el modelo de objetos \textit{Document Object Model (DOM)}, que permite que el contenido de una página esté disponible para los programas en \textit{JavaScript}. Hoy en día, los navegadores emplean la versión \textit{HTML5}, que introduce como mejora las etiquetas de vídeo, de audio, de diálogos entre personas, de secciones y de bloques de contenidos.
     \item \textit{CSS}: es un lenguaje de hojas de estilo que permite modificar la apariencia de una página web. Gracias a este lenguaje, se puede organizar mejor el código al poder separar los datos (lenguaje \textit{HTML}) del diseño (lenguaje \textit{CSS}). Hoy en día, la versión disponible en los navegadores en \textit{CSS3}.
@@ -111,7 +111,7 @@ En el lado del servidor, algunas de las tecnologías que permiten acceder a base
 \begin{itemize}
     \item \textit{Node.js}: uno de los lenguajes frecuentemente utilizado en la programación del \textit{backend} es el lenguaje \textit{JavaScript}. \textit{JavaScript} se creó para su uso en el \textit{frontend} en un principio; sin embargo, gracias al motor \textit{node.js}, este lenguaje puede ser interpretado en el lado del servidor sin necesidad de un navegador.
     \item \textit{Django}: es un entorno web de alto nivel programado en \textit{Python}. Es muy rápido y fácil de utilizar. Además, dispone de una interfaz para el manejo de las bases de datos \textit{SQL} y se puede acceder a ellas en el código mediante instrucciones \textit{Python}.
-    \item \textit{Java}: es un lenguaje de programación y una plataforma informática empleada en un gran número de aplicaciones y sitios web. Es rápido, fiable y escalable. Su lenguaje deriva del de \textit{C} y \textit{C++}, pero con un nivel de abstracción más alto.
+    \item \textit{Spring}: entorno basado en \textit{Java} que simplifica el desarrollo de aplicaciones. Facilita las tareas de configuración y el despliegue en el servidor.
 \end{itemize}
 
 
@@ -161,9 +161,19 @@ Otro ejemplo es el de \textit{OpenRoberta}\footnote{https://lab.open-roberta.org
     \label{fig:lego}
 \end{figure}
 
-El presente trabajo se va a centrar en la plataforma \textit{Kibotics}\footnote{https://kibotics.org/}. \textit{Kibotics} es un entorno web para docencia en robótica y programación que permite a niños y adolescentes aprender programando. Esto quiere decir que \textit{Kibotics}  apuesta por una enseñanza principalmente práctica, ya que resulta mucho más atractiva tanto la enseñanza como el aprendizaje de este modo que únicamente con clases teóricas. \newline
+\textit{Scratch}\footnote{https://scratch.mit.edu/} es un lenguaje de programacion visual que fue desarrollado por el Grupo \textit{Lifelong Kindergarten del MIT Media Lab}. Hoy en día, se utiliza frecuentemente en la educación de ninos y adolescentes, ya que permite el aprendizaje de la programación sin tener un amplio conocimiento del código. Ofrece al usuario la posibilidad de programar construyendo una secuencia de código a partir de diversos bloques de acciones. El programador es capaz de construir la secuencia de
+codigo con rapidez y facilidad, ya que cada bloque incluye una secuencia de texto que explica la función que desempeña. Por ello, la secuencia de código finalmente podrá ser leída e interpretada como si de un texto se tratase.
 
-\textit{Kibotics}  se basa en la utilización del simulador \textit{WebSim}  que, a su vez, está basado en la tecnología \textit{A-Frame}  para representar los mundos. Este simulador permite la creación de diferentes ejercicios para los robots que tienen soporte en la plataforma: piBot, mBot, fórmula 1 y drone Tello. Estos ejercicios podrán solucionarse tanto en \textit{Scratch} (especialmente indicado para aquellos alumnos que no hayan programado anteriormente) como en \textit{Python} (para aquellos niños que cuenten con nociones previas). \newline
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{scratch.PNG}
+    \caption{Aprendizaje de programación robótica con \textit{Scratch}}
+    \label{fig:scracth}
+\end{figure}
+
+El presente trabajo se va a centrar en la plataforma \textit{Kibotics}\footnote{https://kibotics.org/}, la cual es un entorno web para docencia en robótica y programación que permite a niños y adolescentes aprender programando. \textit{Kibotics}  apuesta por una enseñanza principalmente práctica, ya que resulta mucho más atractiva tanto la enseñanza como el aprendizaje de este modo que únicamente con clases teóricas. \newline
+
+\textit{Kibotics}  se basa en la utilización del simulador \textit{WebSim}  que, a su vez, está basado en la tecnología \textit{A-Frame}  para representar los mundos. Este simulador permite la creación de romdiferentes ejercicios para los robots que tienen soporte en la plataforma: piBot, mBot, fórmula 1 y drone Tello. Estos ejercicios podrán solucionarse tanto en lenguaje \textit{Scratch} (especialmente indicado para aquellos alumnos que no hayan programado anteriormente) como en lenguaje \textit{Python}\footnote{https://es.python.org/} (para aquellos niños que cuenten con nociones previas). \newline
 
 \begin{figure}[h!]
     \centering
@@ -172,10 +182,7 @@ El presente trabajo se va a centrar en la plataforma \textit{Kibotics}\footnote{
     \label{fig:kibotics}
 \end{figure}
 
-Por un lado, \textit{Scratch}\footnote{https://scratch.mit.edu/} ofrece al usuario la posibilidad de programar construyendo una secuencia de código a partir de diversos bloques de acciones. El programador es capaz de construir la secuencia de código con rapidez y facilidad, ya que cada bloque incluye una secuencia de texto que explica la función que desempeña. Por otro lado, \textit{Python}\footnote{https://es.python.org/} es un lenguaje de programación cuya sintaxis se asemeja en gran medida al habla inglesa, lo que facilita su comprension. \newline 
-
-
-Todos los robots cuentan con cámaras incorporadas en el hardware, lo que permite la creación de ejercicios que se deben solucionar mediante la utilización de la visión artificial además de los ejercicios que se puedan solucionar mediante el uso de los sensores de los robots (sensores infrarrojos, por ejemplo). La Figura \ref{fig:RobotsKibotics} muestra los robots que soporta actualmente la plataforma.\newline
+Muchos robots cuentan con cámaras incorporadas en el hardware, lo que permite la creación de ejercicios que se deben solucionar mediante la utilización de la visión artificial además de los ejercicios que se puedan solucionar mediante el uso de los sensores de los robots (sensores infrarrojos, por ejemplo). La Figura \ref{fig:RobotsKibotics} muestra los robots que soporta actualmente la plataforma.\newline
 
 
 \begin{figure}[h!]
