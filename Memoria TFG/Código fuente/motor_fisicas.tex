@@ -86,7 +86,7 @@ Se han realizado pruebas de colisiones de \textit{A-Frame} en tres escenarios di
   \caption{Escenarios de prueba de las colisiones de \textit{A-Frame}}
  \end{figure}
 
-Los resultados obtenidos durante las pruebas se detallan en los Cuadros \ref{fig:col-escenario1}, \ref{fig:col-escenario2} y \ref{fig:col-escenario3}. En este link\footnote{https://youtu.be/T214FNFxehs} se ofrece un vídeo con los resultados de las pruebas realizadas en el tercer escenario.
+Los resultados obtenidos durante las pruebas se detallan en los Cuadros \ref{fig:col-escenario1}, \ref{fig:col-escenario2} y \ref{fig:col-escenario3}. En este link\footnote{\url{https://youtu.be/T214FNFxehs}} se ofrece un vídeo con los resultados de las pruebas realizadas en el tercer escenario.
 \begin{table}[]
 \centering
  \resizebox{1.1\textwidth}{!}{  
@@ -532,6 +532,16 @@ A continuación se incluyen los fragmentos de código que ha sido necesario incl
 \begin{verbatim}
 /*Actualización del contador de iteraciones*/
 auxiliaryPhysics() {
+    /* Control de velocidades máximas */
+    var vmax = this.robot.getAttribute('vmax');
+	var wmax = this.robot.getAttribute('wmax');
+	if (this.robot.getAttribute('vmax') == null) {
+	    var vmax = 10;
+	}
+	    
+    if (this.robot.getAttribute('wmax') == null) {
+        var wmax = 5;
+	}
     this.motorIterations = getTickCounter(); 
                
     /* Sólo para Drone */
@@ -562,6 +572,15 @@ auxiliaryPhysics() {
                 
         this.commandedVelocityY = this.robot.body.velocity.y + 
         this.motorIterations*this.accelerationPDY;
+        
+	    if (Math.abs(this.commandedVelocityY) > vmax) {
+            	if (this.commandedVelocityY > 0) {
+                    this.commandedVelocityY = vmax;
+            	} else {
+                    this.commandedVelocityY = -vmax;
+            	}
+        }   
+        
         this.robot.body.velocity.set(this.robot.body.velocity.x, 
         this.commandedVelocityY, this.robot.body.velocity.z); 
     }
@@ -580,6 +599,14 @@ a aplicar utilizando las fórmulas MRUA y la combinación entre motores */
 	this.motorIterations*this.accelerationPDXZ;
 	let rotation = this.getRotation();
 	
+	if (Math.abs(this.commandedVelocityXZ) > vmax) {
+    	if (this.commandedVelocityXZ > 0) {
+    	    this.commandedVelocityXZ = vmax;
+    	} else {
+    	    this.commandedVelocityXZ = -vmax;
+        }
+    }	
+	
 	/* La velocidad comandada resultante se descompone en las velocidades Vx y Vz */
 	this.robot.body.velocity.set(this.commandedVelocityXZ*Math.cos(rotation.y*Math.PI/180), 
 	this.robot.body.velocity.y,this.commandedVelocityXZ*Math.sin(-rotation.y*Math.PI/180));
@@ -594,14 +621,24 @@ a aplicar utilizando las fórmulas MRUA y la combinación entre motores */
     combinación entre motores */
     this.commandedVelocityW = this.robot.body.angularVelocity.y + 
     this.motorIterations*this.accelerationPDW;
+
+    if (Math.abs(this.commandedVelocityW) > wmax) {
+    	if (this.commandedVelocityW > 0) {
+    	    this.commandedVelocityW = wmax;
+        } else {
+            this.commandedVelocityW = -wmax;
+        }
+    }     
+    
     this.robot.body.angularVelocity.set(0, this.commandedVelocityW, 0);
     
     setTimeout(this.auxiliaryPhysics.bind(this), 20);
-    
-    
-    
-    
 }
+
+
+
+
+
 \end{verbatim}
 }
 \normalsize
@@ -612,10 +649,13 @@ a aplicar utilizando las fórmulas MRUA y la combinación entre motores */
 /* Código del controlador PD en velocidad del plano horizontal */
     controladorPDHorizontal(resultVelocity) {
     /* Definición constantes para el controlador, fuerza máxima y aceleración máxima */
+        const kp = 0.45;
+        const kd = 0.01;
         const mass = this.robot.body.mass;
-        const kp = 0.45*mass;
-        const kd = 0.01*mass;
-        const fMax = 100000000;
+        var fMax = this.robot.getAttribute('fmax');
+        if (this.robot.getAttribute('fmax') == null) {
+	    	var fMax = 1000000;
+	    }
         const accelerationMax = fMax / mass;
 
         /* Cálculo del error y derivada del error*/
@@ -647,11 +687,15 @@ a aplicar utilizando las fórmulas MRUA y la combinación entre motores */
 /* Código del controlador PD en posición para la altura*/
     controladorPDVerticalPos() {
         /* Definición constantes para el controlador, fuerza máxima y                   aceleración máxima */
+        const kp = 0.95;
+        const kd = 0.95;
         const mass = this.robot.body.mass;
-        const kp = 0.95*mass;
-        const kd = 0.95*mass;
-        const fMax = 100000000;
+        var fMax = this.robot.getAttribute('fmax');
+        if (this.robot.getAttribute('fmax') == null) {
+	    	var fMax = 1000000;
+	    }
         const accelerationMax = fMax / mass;
+        
 
         /* Cálculo del error y derivada del error*/
         this.errorActualY = this.refPos - this.robot.body.position.y;
@@ -731,7 +775,7 @@ cada robot eligiendo valores apropiados para sus parámetros. A continuación, s
 \end{itemize}
 
 La Figura \ref{fig:friccion-acele} muestra cómo influye en la aceleración autónoma que aplica el motor de físicas complementario el valor de fricción que se parametrice en el escenario. Cuanto mayor es la fricción, más grande es la aceleración autónoma que se debe aplicar.
-\newpage
+
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.8]{aceleracion-friccion.png}
